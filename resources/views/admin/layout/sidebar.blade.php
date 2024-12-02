@@ -42,17 +42,19 @@
                 </div>
                 <div class="menu-divider m-0"></div>
             </div>
-          
+
             <div class="menu-item">
                 <a href="widget.html" class="menu-link">
                     <div class="menu-icon">
                         <i class="fab fa-simplybuilt"></i>
                     </div>
-                    <div class="menu-text"><i class="bi bi-person"></i>Widgets</div>
+                    <div class="menu-text"><i class="bi bi-stickies-fill"></i> Posts</div>
                 </a>
             </div>
         </div>
         <!-- END menu -->
     </div>
     <!-- END scrollbar -->
+
+   
 </div>

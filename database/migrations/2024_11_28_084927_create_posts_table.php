@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('title');
-            $table->text('body');
+            $table->longText('description');
             $table->enum('type', ['article', 'question', 'note']);
             $table->enum('visibility', ['public', 'private'])->default('public');
             $table->timestamps();

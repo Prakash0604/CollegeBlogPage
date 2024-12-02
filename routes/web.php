@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\Dashboard\DashboardController;
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('admin.dashboard.dashboard');
+
+Route::middleware('isLogin')->group(function(){
+    Route::get('/',[AuthController::class,'login'])->name('auth.login');
+    Route::post('/',[AuthController::class,'loginStore'])->name('auth.store');
+    Route::get('/admin/register',[AuthController::class,'register'])->name('auth.admin.register');
+    Route::post('/admin/register',[AuthController::class,'registerStore'])->name('auth.admin.register.store');
+});
+
+Route::middleware('auth')->group(function(){
+    Route::get('admin/dashboard',[DashboardController::class,'index'])->name('admin.dashboard');
+    Route::get('admin/logout',[AuthController::class,'logout'])->name('logout');
 });
