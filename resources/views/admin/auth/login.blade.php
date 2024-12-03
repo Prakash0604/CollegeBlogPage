@@ -29,9 +29,6 @@
                             <i class="fa fa-lock"></i>
                         </div>
                     </div>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
                     <!-- END login-header -->
 
                     <!-- BEGIN login-content -->
