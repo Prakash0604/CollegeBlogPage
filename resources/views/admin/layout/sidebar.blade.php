@@ -44,7 +44,7 @@
             </div>
 
             <div class="menu-item">
-                <a href="widget.html" class="menu-link">
+                <a href="{{ route('post.index') }}" class="menu-link">
                     <div class="menu-icon">
                         <i class="fab fa-simplybuilt"></i>
                     </div>
@@ -56,5 +56,5 @@
     </div>
     <!-- END scrollbar -->
 
-   
+
 </div>
