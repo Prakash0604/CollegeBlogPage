@@ -1,6 +1,7 @@
 <head>
     <meta charset="utf-8" />
     <title>College | Blog App</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <meta content="" name="description" />
     <meta content="" name="author" />

@@ -55,6 +55,19 @@ class AuthController extends Controller
         }
     }
 
+    public function registerAuthPassword(Request $request){
+        try{
+            // dd($request->all());
+            $password=$request->password;
+            if($password !='Admin@123'){
+                return response()->json(['success'=>false,'status'=>301]);
+            }
+            return response()->json(['success'=>true,'status'=>200]);
+        }catch(\Exception $e){
+            return response()->json(['success'=>false,'message'=>$e->getMessage(),'status'=>500]);
+        }
+    }
+
 
     public function logout(){
         Auth::logout();

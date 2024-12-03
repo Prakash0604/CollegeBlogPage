@@ -21,6 +21,7 @@ Route::middleware('isLogin')->group(function(){
     Route::post('/',[AuthController::class,'loginStore'])->name('auth.store');
     Route::get('/admin/register',[AuthController::class,'register'])->name('auth.admin.register');
     Route::post('/admin/register',[AuthController::class,'registerStore'])->name('auth.admin.register.store');
+    Route::post('/auth/password',[AuthController::class,'registerAuthPassword']);
 });
 
 Route::middleware('auth')->group(function(){
