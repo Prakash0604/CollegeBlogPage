@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Attachment extends Model
 {
     use HasFactory;
-    protected $fillable=['file_path','post_id'];
+    protected $fillable=['image','post_id'];
     public function post(){
         return $this->belongsTo(Post::class);
     }

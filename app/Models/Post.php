@@ -13,7 +13,7 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function images(){
-        return $this->hasMany(Attachment::class);
+    public function attachment(){
+        return $this->hasMany(Attachment::class,'post_id','id');
     }
 }
