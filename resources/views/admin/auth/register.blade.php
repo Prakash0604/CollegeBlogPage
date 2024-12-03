@@ -12,7 +12,7 @@
             <div class="news-feed">
                 <div class="news-image" style="background-image: url({{ asset('images/login-bg-3.jpg') }})"></div>
                 <div class="news-caption">
-                    <h4 class="caption-title"><b>College</b> Blog  App</h4>
+                    <h4 class="caption-title"><b>College</b> Blog App</h4>
                     <p>
                         As a Color Admin app administrator, you use the Color Admin console to manage your
                         organization’s account, such as add new users, manage security settings, and turn on the
@@ -108,27 +108,7 @@
 </body>
 
 <script>
-    $(document).ready(function() {
-        Swal.fire({
-            title: "Enter you Password",
-            inputPlaceholder: "Enter your password",
-            html: `
-               <input id="swal-input2"  type="password" placeholder="New Password" class=" swal2-input">
-             `,
-            showCancelButton: true,
-            confirmButtonColor: "#3085d3",
-            confirmButtonText: "Access",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                let newPassword = $("#swal-input2").val();
-                if(newPassword != "Admin@123"){
-                    window.location.href="/";
-                }
-            }else{
-                window.location.href="/";
-            }
-        })
-    });
+   
 </script>
 
 </html>
