@@ -3,7 +3,7 @@ $(document).ready(function () {
         title: "Enter you Password",
         inputPlaceholder: "Enter your password",
         html: `
-           <input id="swal-input2"  type="password" placeholder="New Password" class=" swal2-input">
+           <input id="swal-input2"  type="password" placeholder="Enter the Password" class=" swal2-input">
          `,
         showCancelButton: true,
         confirmButtonColor: "#3085d3",
