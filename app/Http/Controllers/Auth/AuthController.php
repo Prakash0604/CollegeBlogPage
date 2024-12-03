@@ -20,7 +20,7 @@ class AuthController extends Controller
         try{
             if(Auth::attempt(['email'=>$request->email,'password'=>$request->password])){
                 if(Auth::user()->role =='Admin'){
-                    echo "Hello Admin";
+                    return redirect()->route('admin.dashboard')->with(['message'=>'Welcome '.auth()->user()->full_name]);
                 }elseif(Auth::user()->role == 'Student'){
                     echo "Hello Student";
                 }else{

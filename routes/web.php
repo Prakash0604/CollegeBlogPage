@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
+use App\Http\Controllers\Admin\Post\PostsController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,5 +27,6 @@ Route::middleware('isLogin')->group(function(){
 
 Route::middleware('auth')->group(function(){
     Route::get('admin/dashboard',[DashboardController::class,'index'])->name('admin.dashboard');
+    Route::resource('admin/post',PostsController::class)->except(['create','show']);
     Route::get('admin/logout',[AuthController::class,'logout'])->name('logout');
 });
