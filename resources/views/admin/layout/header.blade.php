@@ -6,11 +6,13 @@
     <meta content="" name="description" />
     <meta content="" name="author" />
     <!-- ================== BEGIN core-css ================== -->
-	 <!-- jQuery -->
-	 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
     <link href="{{ asset('admin/css/vendor.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('admin/css/default/app.min.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ asset('/admin/plugins/@fortawesome/fontawesome-free/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('/admin/plugins/@fortawesome/fontawesome-free/css/fontawesome.css') }}">
     {{-- <link
 			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
 			rel="stylesheet"
@@ -20,7 +22,6 @@
     {{-- Sweet Alert --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {{-- Sweet Alert --}}
-
     @isset($extraCs)
         @foreach ($extraCs as $cs)
             <link href="{{ $cs }}" rel="stylesheet" />

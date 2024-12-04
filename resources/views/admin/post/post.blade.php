@@ -3,16 +3,11 @@
     <div class="container-fluid">
         <button type="button" class="btn btn-primary" id="addPostBtn">
             Add Post
-          </button>
-          @include('admin.post.postmodal')
+        </button>
+        @include('admin.post.postmodal')
 
-          <div
-            class="table-responsive mt-4 mb-4"
-          >
-            <table
-                class="table table-bordered table-striped "
-                id="fetch-post-data"
-            >
+        <div class="table-responsive mt-4 mb-4">
+            <table class="table table-bordered table-striped " id="fetch-post-data">
                 <thead>
                     <tr>
                         <th scope="col">S.N</th>
@@ -25,8 +20,8 @@
                     </tr>
                 </thead>
             </table>
-          </div>
-          
-          
+        </div>
+
+
     </div>
 @endsection

@@ -1,3 +1,32 @@
+@php
+    // In your controller
+    $menuItems = [
+        [
+            'name' => 'Posts',
+            'route' => route('post.index'),
+            'icon' => 'fab fa-simplybuilt',
+        ],
+        [
+            'name' => 'Event',
+            'route' => 'eventmanagement', // Set the actual route
+            'icon' => 'fa fa-cog',
+        ],
+        [
+            'name' => 'Send Feedback',
+            'route' => '#', // Set the actual route
+            'icon' => 'fa fa-pencil-alt',
+        ],
+        [
+            'name' => 'Help',
+            'route' => '#', // Set the actual route
+            'icon' => 'fa fa-question-circle',
+        ],
+    ];
+
+@endphp
+
+
+
 <div id="sidebar" class="app-sidebar" data-bs-theme="dark">
     <!-- BEGIN scrollbar -->
     <div class="app-sidebar-content" data-scrollbar="true" data-height="100%">
@@ -43,18 +72,20 @@
                 <div class="menu-divider m-0"></div>
             </div>
 
-            <div class="menu-item">
-                <a href="{{ route('post.index') }}" class="menu-link">
-                    <div class="menu-icon">
-                        <i class="fab fa-simplybuilt"></i>
-                    </div>
-                    <div class="menu-text"><i class="bi bi-stickies-fill"></i> Posts</div>
-                </a>
-            </div>
+            <!-- Loop through menu items -->
+            @foreach ($menuItems as $item)
+                <div class="menu-item">
+                    <a href="{{ $item['route'] }}" class="menu-link">
+                        <div class="menu-icon">
+                            <i class="{{ $item['icon'] }}"></i>
+                        </div>
+                        <div class="menu-text">{{ $item['name'] }}</div>
+                    </a>
+                </div>
+            @endforeach
+
         </div>
         <!-- END menu -->
     </div>
     <!-- END scrollbar -->
-
-
 </div>

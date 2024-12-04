@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers\Admin\Post;
 
-use App\Models\Post;
-use App\Models\Attachment;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\Services\PostService;
-use App\Http\Requests\PostRequest;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PostRequest;
+use App\Models\Attachment;
+use App\Models\Post;
+use App\Services\PostService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
 class PostsController extends Controller
 {
     /**
-     * 
      * Display a listing of the resource.
      */
     protected $postService;
@@ -41,8 +39,7 @@ class PostsController extends Controller
             $post = Post::query();
             $totalCount = $post->count();
             $searchData = $post
-                // ->rightJoin('attachments','attachments.post_id','=','posts.id')
-                // ->withCount('attachment')
+                ->leftJoin('attachments', 'attachments.id', '=', 'posts.id')
                 ->when($search, function ($query) use ($search) {
                     $query->where('title', 'LIKE', "%$search%")
                         ->orWhere('description', 'LIKE', "%$search%")
@@ -58,20 +55,17 @@ class PostsController extends Controller
             return DataTables::of($response)
                 ->addIndexColumn()
                 ->addColumn('action', function ($item) {
-                    $btn = '<button class="btn btn-primary editPostBtn" data-id="' . $item->id . '">Edit</button>';
-                    $btn .= '<button class="btn btn-danger ml-2 deletePostBtn" data-id="' . $item->id . '">Delete</button>';
+                    $btn = '<button class="btn btn-primary editPostBtn" data-id="'.$item->id.'">Edit</button>';
+                    $btn .= '<button class="btn btn-danger ml-2 deletePostBtn" data-id="'.$item->id.'">Delete</button>';
+
                     return $btn;
                 })
                 ->addColumn('description', function ($desc) {
                     return Str::limit($desc->description, 30);
                 })
-                ->addColumn('image', function ($image) {
-                    // return '<span class="badge bg-primary">'..'"</span>';
-                    return "<a type='button' data-id='" . $image->id . "' class='imageListPopup d-flex'><span class='btn btn-primary text-dark mx-auto'>" . $image->attachment_count . "</span></a>";
-                })
                 ->with('recordsFiltered', $searchCount)
                 ->with('recordsTotal', $totalCount)
-                ->rawColumns(['action', 'image'])
+                ->rawColumns(['action'])
                 ->make(true);
         }
         $extraJs = array_merge(
@@ -82,6 +76,7 @@ class PostsController extends Controller
             config('js-map.admin.summernote.style'),
             config('js-map.admin.datatable.style')
         );
+
         return view('admin.post.post', ['extraJs' => $extraJs, 'extraCs' => $extraCs]);
     }
 
@@ -106,18 +101,20 @@ class PostsController extends Controller
             if ($request->images != null) {
                 foreach ($request->images as $image) {
                     $filePath = 'images/posts/';
-                    $imageName = time() . '.' . $image->getClientOriginalName();
+                    $imageName = time().'.'.$image->getClientOriginalName();
                     $path = $image->storeAs($filePath, $imageName, 'public');
                     Attachment::create([
                         'post_id' => $post->id,
-                        'image' => $path
+                        'file_path' => json_encode($path),
                     ]);
                 }
             }
             DB::commit();
+
             return response()->json(['success' => true, 'status' => 200]);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
@@ -149,21 +146,5 @@ class PostsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        try {
-            if ($id) {
-                $attachment=Attachment::where('post_id', $id);
-                // $image[]=$attachment->image;
-                foreach($attachment as $file){
-                    Storage::disk('public')->delete($file->image);
-                }
-                $attachment->delete();
-            }
-            Post::find($id)->delete();
-            return response()->json(['success' => true, 'status' => 200]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()]);
-        }
-    }
+    public function destroy(string $id) {}
 }

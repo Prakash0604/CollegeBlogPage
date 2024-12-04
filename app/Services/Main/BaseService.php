@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class BaseService
 {
     protected $model;
+
     public function __construct(Model $model)
     {
         $this->model = $model;
@@ -30,6 +31,7 @@ class BaseService
     public function updateData(array $array, $id)
     {
         $id = $this->model->find($id);
+
         return $id->update($array);
     }
 

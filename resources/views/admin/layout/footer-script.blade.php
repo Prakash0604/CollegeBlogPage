@@ -1,6 +1,7 @@
 <!-- ================== BEGIN core-js ================== -->
 <script src="{{ asset('admin/js/vendor.min.js') }}"></script>
 <script src="{{ asset('admin/js/app.min.js') }}"></script>
+<script src="{{ asset('/admin/plugins/@fortawesome/fontawesome-free/js/fontawesome.min.js') }}"></script>
 
 @isset($extraJs)
     @foreach ($extraJs as $js)
