@@ -1,36 +1,56 @@
 $(document).ready(function () {
     $(".description").summernote({
-        height: 400
+        height: 400,
     });
 
     var table = $("#fetch-post-data").DataTable({
         processing: true,
         serverSide: true,
         ajax: "/admin/post",
-        order: [2, 'asc'],
+        order: [2, "asc"],
         columns: [
             {
-                data: "DT_RowIndex", name: "DT_RowIndex", orderable: false, searchable: false
-            }, {
-                data: "image", name: "image"
-            }, {
-                data: "title", name: "title"
+                data: "DT_RowIndex",
+                name: "DT_RowIndex",
+                orderable: false,
+                searchable: false,
             },
             {
-                data: "description", name: "description"
-            }, {
-                data: "type", name: "type"
-            }, {
-                data: "visibility", name: "visibility"
-            }, {
-                data: "action", name: "action", orderable: false, searchable: false
-            }
-        ]
+                data: "image",
+                name: "image",
+                orderable: false,
+                searchable: false,
+            },
+            {
+                data: "title",
+                name: "title",
+            },
+            {
+                data: "description",
+                name: "description",
+            },
+            {
+                data: "type",
+                name: "type",
+            },
+            {
+                data: "visibility",
+                name: "visibility",
+            },
+            {
+                data: "action",
+                name: "action",
+                orderable: false,
+                searchable: false,
+            },
+        ],
     });
 
     function clear() {
         $(".warnmessage").text("");
         $(".description").summernote("code", "");
+        $("select").removeClass("is-invalid");
+        $("input").removeClass("is-invalid");
     }
 
     $(document).on("click", "#addPostBtn", function () {
@@ -40,7 +60,6 @@ $(document).ready(function () {
         $(".updatePostBtn").hide();
         $("#postAdd")[0].reset();
     });
-
 
     $(document).on("submit", "#postAdd", function (event) {
         event.preventDefault();
@@ -59,7 +78,7 @@ $(document).ready(function () {
                         title: "Success",
                         text: "Post Created Successfully",
                         showConfirmButton: false,
-                        timer: 1000
+                        timer: 1000,
                     });
                     table.draw();
                     $("#postAdd")[0].reset();
@@ -71,16 +90,16 @@ $(document).ready(function () {
                 if (xhr.status == 422) {
                     let errors = xhr.responseJSON.errors;
                     $.each(errors, function (data, message) {
+                        $("#" + data).addClass("is-invalid");
                         $("#" + data + "-error").text(message[0]);
                     });
                 }
                 // $(".createPostBtn").prop("disabled",false);
-
             },
             complete: function () {
                 $(".createPostBtn").prop("disabled", false);
-            }
-        })
+            },
+        });
     });
 
     $(document).on("click", ".deletePostBtn", function () {
@@ -92,14 +111,16 @@ $(document).ready(function () {
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             confirmButtonText: "Yes, Delete it!",
-            cancelButtonColor: "#d33"
+            cancelButtonColor: "#d33",
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
                     type: "DELETE",
                     url: "/admin/post/" + id,
                     headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
                     },
                     success: function (response) {
                         if (response.status == 200) {
@@ -107,7 +128,7 @@ $(document).ready(function () {
                                 icon: "success",
                                 title: "Post Deleted Successfully",
                                 showConfirmButton: false,
-                                timer: 1000
+                                timer: 1000,
                             });
                             table.draw();
                         } else {
@@ -119,10 +140,9 @@ $(document).ready(function () {
                     },
                     error: function (xhr) {
                         console.log(xhr);
-
-                    }
-                })
+                    },
+                });
             }
-        })
-    })
-})
+        });
+    });
+});

@@ -15,7 +15,7 @@
               <input
                 type="text"
                 name="title"
-                id=""
+                id="title"
                 class="form-control"
                 placeholder=""
                 aria-describedby="helpId"
@@ -25,7 +25,7 @@
 
             <div class="mb-3">
               <label for="" class="form-label">Description<span class="text-danger">*</span></label>
-              <textarea class="form-control description" name="description" id="" rows="3"></textarea>
+              <textarea class="form-control description" name="description" id="description" rows="3"></textarea>
               <small id="description-error" class="text-danger warnmessage"></small>
             </div>
 
@@ -34,7 +34,7 @@
               <select
                 class="form-select"
                 name="type"
-                id=""
+                id="type"
               >
                 <option value="">Select one</option>
                 <option value="article">Article</option>
@@ -49,7 +49,7 @@
               <select
                 class="form-select form-select-lg"
                 name="visibility"
-                id=""
+                id="visibility"
               >
                 <option value="">Select one</option>
                 <option value="private">Private</option>
@@ -63,7 +63,7 @@
               <input
                 type="file"
                 name="images[]"
-                id=""
+                id="images"
                 multiple
                 class="form-control"
                 placeholder=""
@@ -71,8 +71,6 @@
               />
               <small id="image-error" class="text-danger warnmessage"></small>
             </div>
-            
-            
           </div>
         </div>
         <div class="modal-footer">

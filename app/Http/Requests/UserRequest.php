@@ -24,10 +24,10 @@ class UserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'full_name'=>Route::CurrentRouteName() == 'auth.store'  ? 'nullable':'required|min:3',
-            'email'=>Route::CurrentRouteName() == 'auth.store'  ? ['required','email'] : ['required','email','unique:users,email'],
-            'password'=>['required', Password::min(6)->mixedCase()->numbers()->symbols()],
-            'confirm_password'=>'same:password',
+            'full_name'=>Route::CurrentRouteName() == 'auth.admin.register.store'  ? 'required|min:3' : 'nullable',
+            'email'=>Route::CurrentRouteName() == 'auth.admin.register.store'  ?  ['required','email','unique:users,email'] : ['required','email'] ,
+            'password'=>['required'],
+            'confirm_password'=>Route::currentRouteName() == 'auth.admin.register.store' ? 'same:password' :'nullable',
         ];
     }
 

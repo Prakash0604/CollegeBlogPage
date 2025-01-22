@@ -17,7 +17,7 @@ use Yajra\DataTables\Facades\DataTables;
 class PostsController extends Controller
 {
     /**
-     * 
+     *
      * Display a listing of the resource.
      */
     protected $postService;
@@ -30,47 +30,30 @@ class PostsController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $search = $request->input('search.value');
-            $columns = $request->input('columns');
-            $pageSize = $request->input('length');
-            $order = $request->input('order')[0];
-            $IndexOrderColumn = $order['column'];
-            $orderBy = $order['dir'];
-            $start = $request->input('start');
 
-            $post = Post::query();
-            $totalCount = $post->count();
-            $searchData = $post
-                // ->rightJoin('attachments','attachments.post_id','=','posts.id')
-                // ->withCount('attachment')
-                ->when($search, function ($query) use ($search) {
-                    $query->where('title', 'LIKE', "%$search%")
-                        ->orWhere('description', 'LIKE', "%$search%")
-                        ->orWhere('type', 'LIKE', "%$search%")
-                        ->orWhere('visibility', 'LIKE', "%$search%");
-                });
+            $posts=Post::with('attachment')->get();
 
-            $searchCount = $searchData->count();
-            $response = $searchData->orderBy($columns[$IndexOrderColumn]['data'], $orderBy)
-                ->offset($start)
-                ->limit($pageSize);
-
-            return DataTables::of($response)
+            return DataTables::of($posts)
                 ->addIndexColumn()
                 ->addColumn('action', function ($item) {
                     $btn = '<button class="btn btn-primary editPostBtn" data-id="' . $item->id . '">Edit</button>';
-                    $btn .= '<button class="btn btn-danger ml-2 deletePostBtn" data-id="' . $item->id . '">Delete</button>';
+                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deletePostBtn" data-id="' . $item->id . '">Delete</button>';
                     return $btn;
                 })
                 ->addColumn('description', function ($desc) {
-                    return Str::limit($desc->description, 30);
+                    return strip_tags(Str::limit($desc->description, 50));
+                })
+                ->addColumn('type',function($type){
+                    return ucfirst($type->type);
+                })
+                ->addColumn('visibility',function($visibility){
+                    return ucfirst($visibility->visibility);
                 })
                 ->addColumn('image', function ($image) {
                     // return '<span class="badge bg-primary">'..'"</span>';
-                    return "<a type='button' data-id='" . $image->id . "' class='imageListPopup d-flex'><span class='btn btn-primary text-dark mx-auto'>" . $image->attachment_count . "</span></a>";
+                    $count=$image->attachment->count();
+                    return "<a type='button' data-id='" . $image->id . "' class='imageListPopup d-flex'><span class='btn btn-primary text-dark mx-auto'>" . $count . "</span></a>";
                 })
-                ->with('recordsFiltered', $searchCount)
-                ->with('recordsTotal', $totalCount)
                 ->rawColumns(['action', 'image'])
                 ->make(true);
         }
