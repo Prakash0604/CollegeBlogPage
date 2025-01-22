@@ -16,8 +16,8 @@
 		<div id="header" class="app-header">
 			<!-- BEGIN navbar-header -->
 			<div class="navbar-header">
-				<a href="index.html" class="navbar-brand"><span class="navbar-logo"></span> <b class="me-3px">Color</b>
-					Admin</a>
+				<a href="index.html" class="navbar-brand"><span class="navbar-logo"></span> <b class="me-3px">College</b>
+					Blog</a>
 				<button type="button" class="navbar-mobile-toggler" data-toggle="app-sidebar-mobile">
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
@@ -101,9 +101,13 @@
 
 				<div class="navbar-item navbar-user dropdown">
 					<a href="#" class="navbar-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-						<img src="{{ asset('admin/img/user/user-13.jpg') }}" alt="" />
+                        @if (Auth::user() && Auth::user()->image!=null)
+						<img src="{{ asset('storage/'. Auth::user()->image) }}" alt="" />
+                        @else
+						<img src="{{ asset('default.webp') }}" alt="" />
+                        @endif
 						<span>
-							<span class="d-none d-md-inline">Adam Schwartz</span>
+							<span class="d-none d-md-inline">{{ Auth::user()->full_name }}</span>
 							<b class="caret"></b>
 						</span>
 					</a>
@@ -114,7 +118,7 @@
 							<span class="badge bg-danger rounded-pill ms-auto pb-4px">2</span>
 						</a>
 						<a href="calendar.html" class="dropdown-item">Calendar</a>
-						<a href="extra_settings_page.html" class="dropdown-item">Settings</a>
+						<a href="{{ route('logout') }}" class="dropdown-item">Settings</a>
 						<div class="dropdown-divider"></div>
 						<a href="login.html" class="dropdown-item">Log Out</a>
 					</div>

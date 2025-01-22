@@ -26,7 +26,10 @@ Route::middleware('isLogin')->group(function(){
 });
 
 Route::middleware('auth')->group(function(){
-    Route::get('admin/dashboard',[DashboardController::class,'index'])->name('admin.dashboard');
-    Route::resource('admin/post',PostsController::class)->except(['create','show']);
-    Route::get('admin/logout',[AuthController::class,'logout'])->name('logout');
+    Route::prefix('admin')->group(function(){
+        Route::get('dashboard',[DashboardController::class,'index'])->name('admin.dashboard');
+        Route::resource('post',PostsController::class)->except(['create','show']);
+        Route::get('post/image/delete/{id}',[PostsController::class,'deleteImage']);
+        Route::get('logout',[AuthController::class,'logout'])->name('logout');
+    });
 });
