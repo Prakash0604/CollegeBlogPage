@@ -51,6 +51,23 @@
                     <div class="menu-text"><i class="bi bi-stickies-fill"></i> Posts</div>
                 </a>
             </div>
+
+            <div class="menu-item">
+                <a href="{{ route('faculty.index') }}" class="menu-link">
+                    <div class="menu-icon">
+                        <i class="fab fa-simplybuilt"></i>
+                    </div>
+                    <div class="menu-text"><i class="bi bi-stickies-fill"></i> Degree</div>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="{{ route('syllabus-content.index') }}" class="menu-link">
+                    <div class="menu-icon">
+                        <i class="fab fa-simplybuilt"></i>
+                    </div>
+                    <div class="menu-text"><i class="bi bi-stickies-fill"></i> Syllabus Content</div>
+                </a>
+            </div>
         </div>
         <!-- END menu -->
     </div>

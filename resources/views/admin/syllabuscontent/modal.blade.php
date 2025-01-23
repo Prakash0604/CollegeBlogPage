@@ -10,8 +10,42 @@
                   </div>
                   <div class="modal-body">
                       <div class="row">
+                          @csrf
+                          <div class="col-md-4">
+                              <label for="" class="form-label">Batch<span class="text-danger">*</span></label>
+                              <select class="form-select" name="type" id="type">
+                                  <option value="">Select one</option>
+                                  <option value="article">Article</option>
+                                  <option value="question">Question</option>
+                                  <option value="note">Note</option>
+                              </select>
+                              <small id="type-error" class="text-danger warnmessage"></small>
+                          </div>
+
+                          <div class="col-md-4">
+                              <label for="" class="form-label">Type<span class="text-danger">*</span></label>
+                              <select class="form-select" name="type" id="type">
+                                  <option value="">Select one</option>
+                                  <option value="article">Article</option>
+                                  <option value="question">Question</option>
+                                  <option value="note">Note</option>
+                              </select>
+                              <small id="type-error" class="text-danger warnmessage"></small>
+                          </div>
+
+                          <div class="col-md-4">
+                              <label for="" class="form-label">Year/Semester<span
+                                      class="text-danger">*</span></label>
+                              <select class="form-select" name="type" id="type">
+                                  <option value="">Select one</option>
+                                  <option value="article">Article</option>
+                                  <option value="question">Question</option>
+                                  <option value="note">Note</option>
+                              </select>
+                              <small id="type-error" class="text-danger warnmessage"></small>
+                          </div>
+
                           <div class="mb-3">
-                              @csrf
                               <label for="" class="form-label">Title <span class="text-danger">*</span> </label>
                               <input type="hidden" name="id" id="id">
                               <input type="text" name="title" id="title" class="form-control" placeholder=""
@@ -24,17 +58,6 @@
                                       class="text-danger">*</span></label>
                               <textarea class="form-control description" name="description" id="description" rows="3"></textarea>
                               <small id="description-error" class="text-danger warnmessage"></small>
-                          </div>
-
-                          <div class="mb-3">
-                              <label for="" class="form-label">Type<span class="text-danger">*</span></label>
-                              <select class="form-select" name="type" id="type">
-                                  <option value="">Select one</option>
-                                  <option value="article">Article</option>
-                                  <option value="question">Question</option>
-                                  <option value="note">Note</option>
-                              </select>
-                              <small id="type-error" class="text-danger warnmessage"></small>
                           </div>
 
                           <div class="mb-3">
@@ -80,7 +103,7 @@
                   <div class="modal-body">
                       <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
                           <div class="carousel-inner">
-                            
+
                           </div>
                           <button class="carousel-control-prev" type="button"
                               data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
