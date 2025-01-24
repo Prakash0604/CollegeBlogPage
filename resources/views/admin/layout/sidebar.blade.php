@@ -72,18 +72,31 @@
                 <div class="menu-divider m-0"></div>
             </div>
 
-            <!-- Loop through menu items -->
-            @foreach ($menuItems as $item)
-                <div class="menu-item">
-                    <a href="{{ $item['route'] }}" class="menu-link">
-                        <div class="menu-icon">
-                            <i class="{{ $item['icon'] }}"></i>
-                        </div>
-                        <div class="menu-text">{{ $item['name'] }}</div>
-                    </a>
-                </div>
-            @endforeach
+            <div class="menu-item">
+                <a href="{{ route('post.index') }}" class="menu-link">
+                    <div class="menu-icon">
+                        <i class="fab fa-simplybuilt"></i>
+                    </div>
+                    <div class="menu-text"><i class="bi bi-stickies-fill"></i> Posts</div>
+                </a>
+            </div>
 
+            <div class="menu-item">
+                <a href="{{ route('faculty.index') }}" class="menu-link">
+                    <div class="menu-icon">
+                        <i class="fab fa-simplybuilt"></i>
+                    </div>
+                    <div class="menu-text"><i class="bi bi-stickies-fill"></i> Degree</div>
+                </a>
+            </div>
+            <div class="menu-item">
+                <a href="{{ route('syllabus-content.index') }}" class="menu-link">
+                    <div class="menu-icon">
+                        <i class="fab fa-simplybuilt"></i>
+                    </div>
+                    <div class="menu-text"><i class="bi bi-stickies-fill"></i> Syllabus Content</div>
+                </a>
+            </div>
         </div>
         <!-- END menu -->
     </div>
