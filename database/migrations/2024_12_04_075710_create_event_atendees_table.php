@@ -9,10 +9,14 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    // some migration code
     public function up(): void
     {
         Schema::create('event_atendees', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->enum('status',['active','inactive'])->default('active');
+
             $table->timestamps();
         });
     }
