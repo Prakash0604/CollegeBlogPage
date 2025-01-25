@@ -25,4 +25,8 @@ class DegreeBatchSemester extends Model
     public function yearSemester(){
         return $this->belongsTo(YearSemester::class,'year_semester_id');
     }
+
+    public function degreeSubject(){
+        return $this->hasMany(DegreeSubject::class);
+    }
 }

@@ -263,26 +263,27 @@ $(document)
     .off("click", ".assignSubjectBtn")
     .on("click", ".assignSubjectBtn", function () {
         $("#assignSubjectformModal").modal("show");
-        $(".addForm").attr("id","storeSubject");
+        $(".addForm").attr("id", "storeSubject");
         $("#storeSubject")[0].reset();
         $("#degree_id").val($(this).attr("data-id"));
         $("#assignCreateSubjectBtn").show();
         $("#assignUpdateSubjectBtn").hide();
     });
 
-
-    $(document).off("submit","#storeSubject").on("submit","#storeSubject",function(e){
+$(document)
+    .off("submit", "#storeSubject")
+    .on("submit", "#storeSubject", function (e) {
         e.preventDefault();
-        let formdata=new FormData(this);
-        $("#assignCreateSubjectBtn").prop("disabled",true);
+        let formdata = new FormData(this);
+        $("#assignCreateSubjectBtn").prop("disabled", true);
         $.ajax({
-            url:"/admin/faculty/batch/subject",
-            method:"post",
-            data:formdata,
-            contentType:false,
-            processData:false,
-            success:function(response){
-                if(response.status == true){
+            url: "/admin/faculty/batch/subject",
+            method: "post",
+            data: formdata,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.status == true) {
                     Swal.fire({
                         icon: "success",
                         title: "Subject Added Successfully",
@@ -295,19 +296,18 @@ $(document)
                     $("#assignSubjectformModal").modal("hide");
                 }
             },
-            error:function(xhr){
+            error: function (xhr) {
                 console.log(xhr);
                 Swal.fire({
                     icon: "warning",
                     title: "Something went wrong!",
                 });
             },
-            complete:function(){
-                $("#assignCreateSubjectBtn").prop("disabled",false);
-            }
-        })
-
-    })
+            complete: function () {
+                $("#assignCreateSubjectBtn").prop("disabled", false);
+            },
+        });
+    });
 
 $(document).on("change", "#batch_type_id", function () {
     let data = $(this).val();
@@ -328,7 +328,7 @@ $(document).on("change", "#batch_type_id", function () {
 
 $(document).on("click", ".addMoreBtn", function () {
     let optionsHtml = `<option value="">Select one</option>`;
-    $.each(subjects, function (id,data) {
+    $.each(subjects, function (id, data) {
         optionsHtml += `<option value="${data.id}">${data.title}</option>`;
     });
     let html = `
@@ -352,3 +352,154 @@ $(document).on("click", ".addMoreBtn", function () {
 $(document).on("click", ".removeBtn", function () {
     $(this).closest(".row").remove();
 });
+
+function getSubject() {
+    $("#view_degree_subject").DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            url: "/admin/faculty/batch/subject/show",
+            type: "POST",
+            data: function (d) {
+                d.semester_id = $("#view_semester_id").val();
+                d.batch_type_id = $("#view_batch_type_id").val();
+                d.degree_id = $("#view_degree_id").val();
+                d.batch_id = $("#view_batch_id").val();
+            },
+        },
+        order: [2, "asc"],
+        columns: [
+            {
+                data: "DT_RowIndex",
+                name: "DT_RowIndex",
+                orderable: false,
+                searchable: false,
+            },
+            {
+                data: "subject",
+            },
+            {
+                data: "action",
+                name: "action",
+                orderable: false,
+                searchable: false,
+            },
+        ],
+        language: {
+            emptyTable: "No subject has been assigned",
+        },
+    });
+}
+$(document)
+    .off("click", ".viewSubjectBtn")
+    .on("click", ".viewSubjectBtn", function () {
+        let uid = $(this).attr("data-id");
+        $("#view_degree_id").val(uid);
+        $("#view_degree_subject tbody").empty();
+        $("#viewSubjectformModal").modal("show");
+    });
+
+$(document).on("change", "#view_batch_type_id", function () {
+    let data = $(this).val();
+    $.ajax({
+        url: "/admin/faculty/batch/type/" + data,
+        type: "get",
+        success: function (res) {
+            let response = res.message;
+            let html = ` <option value="">Select one</option>`;
+            $("#view_semester_id").empty();
+            $.each(response, function (id, data) {
+                html += ` <option value="${data.id}">${data.title}</option>`;
+            });
+            $("#view_semester_id").append(html);
+        },
+    });
+});
+
+$(document)
+    .off("change", "#view_semester_id")
+    .on("change", "#view_semester_id", function () {
+        let semester = $(this).val();
+        let batch_type = $("#view_batch_type_id").val();
+        let degree_id = $("#view_degree_id").val();
+        let batch_id = $("#view_batch_id").val();
+        $("#view_degree_subject tbody").empty();
+        $.ajax({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            url: "/admin/faculty/batch/subject/show",
+            type: "post",
+            data: {
+                semester_id: semester,
+                batch_type_id: batch_type,
+                degree_id: degree_id,
+                batch_id: batch_id,
+            },
+            success: function (res) {
+                console.log(res);
+                if (res.recordsTotal > 0) {
+                    $("#view_degree_subject").DataTable().destroy();
+                    getSubject();
+                } else {
+                    $("#view_degree_subject").DataTable().destroy();
+                    $("#view_degree_subject tbody").html(
+                        `<tr><td colspan="3" class="text-center">No Subject Assigned</td></tr>`
+                    );
+                }
+            },
+            error: function (xhr) {
+                console.log(xhr);
+            },
+        });
+    });
+
+$(document)
+    .off("click", ".deleteDegreeSubjectBtn")
+    .on("click", ".deleteDegreeSubjectBtn", function () {
+        let dataUrl = $(this).attr("data-url");
+        Swal.fire({
+            icon: "warning",
+            title: "Are you sure ?",
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "Yes, Delete it!",
+            cancelButtonColor: "#d33",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "DELETE",
+                    url: dataUrl,
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                    success: function (response) {
+                        if (response.status == true) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Subject Deleted Successfully",
+                                showConfirmButton: false,
+                                timer: 1000,
+                            });
+                            $("#view_degree_subject").DataTable().destroy();
+                            getSubject();
+                        } else {
+                            Swal.fire({
+                                icon: "warning",
+                                title: "Something went wrong!",
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        console.log(xhr);
+                    },
+                });
+            }
+        });
+    });
