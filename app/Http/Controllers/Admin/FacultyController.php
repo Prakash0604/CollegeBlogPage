@@ -64,6 +64,50 @@ class FacultyController extends Controller
         return view('admin.faculty.list', compact('extraJs', 'extraCs', 'title', 'batches', 'types', 'subjects'));
     }
 
+    public function showDegreeSubject(Request $request)
+    {
+        try {
+            $request->validate([
+                'semester_id' => 'required|integer',
+                'batch_type_id' => 'required|integer',
+                'degree_id' => 'required|integer',
+                'batch_id' => 'required|integer',
+            ]);
+
+            $degrees = DegreeBatchSemester::with('degreeSubject.subject')
+                ->where('year_semester_id', $request->semester_id)
+                ->where('batch_type_id', $request->batch_type_id)
+                ->where('degree_id', $request->degree_id)
+                ->where('batch_id', $request->batch_id)
+                ->get();
+
+            $rows = $degrees->flatMap(function ($degree) {
+                return $degree->degreeSubject->map(function ($degreeSubject) {
+                    return [
+                        'id' => $degreeSubject->id,
+                        'subject' => $degreeSubject->subject?->title,
+                        'delete_url' => route('degreeSubject.delete', $degreeSubject->id),
+                    ];
+                });
+            });
+
+            return DataTables::of($rows)
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    return '<button type="button" class="btn btn-danger deleteDegreeSubjectBtn" data-url="' . e($row['delete_url']) . '">Delete</button>';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred while processing your request.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
     public function toggleStatus($id)
     {
@@ -92,13 +136,6 @@ class FacultyController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()]);
         }
-    }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -194,6 +231,16 @@ class FacultyController extends Controller
             return response()->json(['status' => true]);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function deleteDegreeSubject($id){
+        $id=DegreeSubject::find($id);
+        if($id!=null){
+            $id->delete();
+            return response()->json(['status'=>true]);
+        }else{
+            return response()->json(['status'=>false,'message'=>"No Subject found to delete!"]);
         }
     }
 }

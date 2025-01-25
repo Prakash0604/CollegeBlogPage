@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function(){
         Route::get('faculty/status/{id}', [FacultyController::class,'toggleStatus']);
         Route::get('faculty/batch/type/{data}', [FacultyController::class,'getFacultySemester']);
         Route::post('faculty/batch/subject', [FacultyController::class,'storeSubject']);
+        Route::post('faculty/batch/subject/show',[FacultyController::class,'showDegreeSubject']);
+        Route::delete('faculty/batch/subject/delete/{id}',[FacultyController::class,'deleteDegreeSubject'])->name('degreeSubject.delete');
         //Syllabus Content Module
         Route::resource('syllabus-content', SyllabusContentController::class);
         Route::get('logout',[AuthController::class,'logout'])->name('logout');
