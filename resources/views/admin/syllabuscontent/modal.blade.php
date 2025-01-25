@@ -1,7 +1,7 @@
   <!-- Modal -->
   <div class="modal fade" id="formModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
       aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog modal-xl">
           <div class="modal-content">
               <form id="postAdd" class="addForm">
                   <div class="modal-header">
@@ -11,39 +11,53 @@
                   <div class="modal-body">
                       <div class="row">
                           @csrf
-                          <div class="col-md-4">
-                              <label for="" class="form-label">Batch<span class="text-danger">*</span></label>
-                              <select class="form-select" name="type" id="type">
+                          <div class="col-md-3">
+                              <label for="" class="form-label">Faculty<span class="text-danger">*</span></label>
+                              <select class="form-select" name="type" id="faculty_id">
                                   <option value="">Select one</option>
-                                  <option value="article">Article</option>
-                                  <option value="question">Question</option>
-                                  <option value="note">Note</option>
+                                  @foreach ($faculties as $degree)
+                                  <option value="{{ $degree->id }}">{{ $degree->title }}</option>
+                                  @endforeach
                               </select>
                               <small id="type-error" class="text-danger warnmessage"></small>
                           </div>
 
-                          <div class="col-md-4">
+                          <div class="col-md-2">
+                            <label for="" class="form-label">Batch<span class="text-danger">*</span></label>
+                            <select class="form-select" name="batch_id" id="batch_id">
+
+                            </select>
+                            <small id="type-error" class="text-danger warnmessage"></small>
+                        </div>
+
+                          <div class="col-md-2">
                               <label for="" class="form-label">Type<span class="text-danger">*</span></label>
-                              <select class="form-select" name="type" id="type">
-                                  <option value="">Select one</option>
-                                  <option value="article">Article</option>
-                                  <option value="question">Question</option>
-                                  <option value="note">Note</option>
+                              <select class="form-select" name="batch_type_id" id="batch_type_id">
+                                <option value="">Select One</option>
+                                @foreach ($yearSemesters as $type)
+                                <option value="{{ $type->id }}">{{ $type->title }}</option>
+                                @endforeach
                               </select>
                               <small id="type-error" class="text-danger warnmessage"></small>
                           </div>
 
-                          <div class="col-md-4">
+                          <div class="col-md-3">
                               <label for="" class="form-label">Year/Semester<span
                                       class="text-danger">*</span></label>
-                              <select class="form-select" name="type" id="type">
-                                  <option value="">Select one</option>
-                                  <option value="article">Article</option>
-                                  <option value="question">Question</option>
-                                  <option value="note">Note</option>
+                              <select class="form-select" name="semester_id" id="semester_id">
+
                               </select>
                               <small id="type-error" class="text-danger warnmessage"></small>
                           </div>
+
+                          <div class="col-md-2">
+                            <label for="" class="form-label">Subject<span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select" name="subject_id" id="subject_id">
+
+                            </select>
+                            <small id="type-error" class="text-danger warnmessage"></small>
+                        </div>
 
                           <div class="mb-3">
                               <label for="" class="form-label">Title <span class="text-danger">*</span> </label>

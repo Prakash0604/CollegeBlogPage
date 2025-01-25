@@ -41,6 +41,10 @@ Route::middleware('auth')->group(function(){
         Route::delete('faculty/batch/subject/delete/{id}',[FacultyController::class,'deleteDegreeSubject'])->name('degreeSubject.delete');
         //Syllabus Content Module
         Route::resource('syllabus-content', SyllabusContentController::class);
+        Route::get('syllabus/get/batch/{id}',[SyllabusContentController::class,'getBatch']);
+        Route::get('syllabus/get/batch-type/{id}',[SyllabusContentController::class,'getSemesterByBatch']);
+        Route::get('syllabus/get/type/semester/{id}',[SyllabusContentController::class,'getSemesterByType']);
+        Route::post('syllabus/get/type/semester/subject',[SyllabusContentController::class,'getSubject']);
         Route::get('logout',[AuthController::class,'logout'])->name('logout');
     });
 });

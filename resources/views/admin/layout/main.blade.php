@@ -145,7 +145,5 @@
 	<!-- END #app -->
 
 	@include('admin.layout.footer-script')
-
 </body>
-
 </html>
