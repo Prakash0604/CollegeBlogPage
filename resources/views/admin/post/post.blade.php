@@ -2,7 +2,7 @@
 @section('content')
     <div class="container-fluid">
         <button type="button" class="btn btn-primary" id="addPostBtn">
-            Add Post
+            <i class="bi bi-plus-lg"></i>  Add Post
           </button>
           @include('admin.post.postmodal')
 
@@ -26,7 +26,7 @@
                 </thead>
             </table>
           </div>
-          
-          
+
+
     </div>
 @endsection

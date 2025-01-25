@@ -398,6 +398,9 @@ $(document)
     .on("click", ".viewSubjectBtn", function () {
         let uid = $(this).attr("data-id");
         $("#view_degree_id").val(uid);
+        $("#view_batch_id").val("");
+        $("#view_batch_type_id").val("");
+        $("#view_semester_id").empty();
         $("#view_degree_subject tbody").empty();
         $("#viewSubjectformModal").modal("show");
     });

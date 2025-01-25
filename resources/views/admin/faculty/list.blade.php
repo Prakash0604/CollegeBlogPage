@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <h3 class="text-center">{{ $title }}</h3>
         <button type="button" class="btn btn-primary" id="addFacultyBtn">
-            Add Degree
+            <i class="bi bi-plus-lg"></i> Add Degree
         </button>
         @include('admin.faculty.modal')
 
