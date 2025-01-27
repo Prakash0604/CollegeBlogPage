@@ -5,22 +5,21 @@
             Add Syllabus
           </button>
           @include('admin.syllabuscontent.modal')
-
           <div
             class="table-responsive mt-4 mb-4"
           >
             <table
                 class="table table-bordered table-striped "
-                id="fetch-post-data"
+                id="fetch-syllabus-data"
             >
                 <thead>
                     <tr>
                         <th scope="col">S.N</th>
-                        <th scope="col">Image</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Description</th>
+                        <th scope="col">Faculty</th>
+                        <th scope="col">Batch</th>
                         <th scope="col">Type</th>
-                        <th scope="col">Visibility</th>
+                        <th scope="col">Semester/Year</th>
+                        <th scope="col">Subject</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
