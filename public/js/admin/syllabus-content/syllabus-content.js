@@ -83,7 +83,7 @@ $(document).on("change", "#batch_id", function () {
         url: "/admin/syllabus/get/batch-type/" + id,
         type: "get",
         success: function (res) {
-            console.log(res);
+            // console.log(res);
             if (res.status == true) {
                 let html = `<option value="">Select one</option>`;
                 if (res.message.length > 0) {
@@ -118,7 +118,7 @@ $(document).on("change", "#batch_type_id", function () {
             degree_id: degree_id,
         },
         success: function (res) {
-            console.log(res);
+            // console.log(res);
             if (res.status == true) {
                 let html = `<option value="">Select one</option>`;
                 if (res.message.length > 0) {
@@ -161,7 +161,7 @@ $(document).on("change", "#semester_id", function () {
             year_semester_id: year_semester_id,
         },
         success: function (res) {
-            console.log(res);
+            // console.log(res);
             if (res.status == true) {
                 let html = `<option value="">Select one</option>`;
                 if (res.message.length > 0) {
@@ -354,5 +354,197 @@ $(document)
                     }
                 }
             },
+        });
+    });
+
+$(document)
+    .off("click", ".editSyllabusBtn")
+    .on("click", ".editSyllabusBtn", function () {
+        $("#formModal").modal("show");
+        $("#createSyllabusBtn").hide();
+        $("#updateSyllabusBtn").show();
+        $(".addForm").attr("id", "updateSyllabus");
+        let dataUrl = $(this).attr("data-url");
+        resetModalContent();
+        $.ajax({
+            url: dataUrl,
+            type: "get",
+            success: function (response) {
+                if (response.status) {
+                    console.log(response);
+                    $("#faculty_id")
+                        .val(response.message.degree_id)
+                        .trigger("change");
+                    setTimeout(() => {
+                        $("#batch_id")
+                            .val(response.message.batch_id)
+                            .trigger("change");
+                    }, 400);
+                    setTimeout(() => {
+                        $("#batch_type_id")
+                            .val(response.message.batch_type_id)
+                            .trigger("change");
+                    }, 600);
+                    setTimeout(() => {
+                        $("#semester_id")
+                            .val(response.message.year_semester_id)
+                            .trigger("change");
+                    }, 900);
+                    setTimeout(() => {
+                        $("#subject_id")
+                            .val(response.message.subject_id)
+                            .trigger("change");
+                    }, 1000);
+
+                    $("#hasChapter").val(response.message.hasChapter);
+                    if (response.message.hasChapter === "Y") {
+                        $("#hasChapter")
+                            .prop("checked", true)
+                            .trigger("change");
+                        $(".accordion-collapse").addClass("show");
+
+                        $(".appendSyllabusChapter").empty();
+                        let subjects = response.message.syllabus_subject;
+                        $.each(subjects, function (index, data) {
+                            let html = `
+                                <div class="row chapter-row" id="chapter_row_${index}">
+                                    <div class="col-md-6">
+                                        <label for="chapter_name_${index}" class="form-label">
+                                            Chapter Name: <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" name="chapter_name[]" id="chapter_name_${index}"
+                                               class="form-control" value="${data.chapter_name}" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="chapter_title_${index}" class="form-label">
+                                            Title: <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" name="chapter_title[]" id="chapter_title_${index}"
+                                               class="form-control" value="${data.chapter_title}" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="chapter_description_${index}" class="form-label">
+                                            Description <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea class="form-control summernote" name="chapter_description[]"
+                                                  id="chapter_description_${index}" rows="3">${data.chapter_description}</textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <a href="javascript:void(0);" class="btn btn-primary float-right addMoreChapter">
+                                            Add More
+                                        </a>
+                                        <a href="javascript:void(0);" class="btn btn-danger float-right removeChapter">
+                                            Remove
+                                        </a>
+                                    </div>
+                                </div>`;
+                            $(".appendSyllabusChapter").append(html);
+                        });
+
+                        $(".summernote").summernote({
+                            height: 200,
+                        });
+                    } else {
+                        $("#hasChapter")
+                            .prop("checked", false)
+                            .trigger("change");
+                        $(".accordion-collapse").removeClass("show");
+                        $(".appendSyllabusChapter").empty();
+
+                        $("#title").val(response.message.title);
+                        $("#description").summernote(
+                            "code",
+                            response.message.description
+                        );
+                        $("#visibility").val(response.message.visibility);
+                        if (response.message.file != null) {
+                            $(".appendFile").html(
+                                `<img src="/storage/${response.message.file}" width="100" height="100" alt="File Preview">`
+                            );
+                        } else {
+                            $(".appendFile").html("");
+                        }
+                    }
+                } else {
+                    alert("Failed to fetch syllabus data. Please try again.");
+                }
+            },
+            error: function (xhr) {
+                console.error("An error occurred:", xhr.responseText);
+                alert("An error occurred while processing the request.");
+            },
+        });
+    });
+
+// Function to reset modal content
+function resetModalContent() {
+    $("#formModal").find("input, select, textarea").val("").trigger("change");
+    $(".appendSyllabusChapter").empty();
+    $(".appendFile").html("");
+
+    if ($("#description").hasClass("summernote-initialized")) {
+        $("#description").summernote("destroy").val("");
+    }
+    $(".summernote").summernote("destroy");
+}
+
+$(document)
+    .off("submit", "#updateSyllabus")
+    .on("submit", "#updateSyllabus", function (e) {
+        e.preventDefault();
+        let formdata = new FormData(this);
+
+        $.ajax({
+
+        });
+    });
+
+$(document)
+    .off("click", ".deleteSyllabusBtn")
+    .on("click", ".deleteSyllabusBtn", function () {
+        let url = $(this).attr("data-url");
+        Swal.fire({
+            icon: "warning",
+            title: "Are you sure ?",
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "Yes, Delete it!",
+            cancelButtonColor: "#d33",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "DELETE",
+                    url: url,
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                    success: function (response) {
+                        if (response.status == true) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Syllabus Deleted Successfully",
+                                showConfirmButton: false,
+                                timer: 1000,
+                            });
+                            $("#fetch-syllabus-data")
+                                .DataTable()
+                                .destroy()
+                                .clear();
+                            getData();
+                        } else {
+                            Swal.fire({
+                                icon: "warning",
+                                title: "Something went wrong!",
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        console.log(xhr);
+                    },
+                });
+            }
         });
     });

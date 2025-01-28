@@ -152,7 +152,6 @@
                                   <small id="image-error" class="text-danger warnmessage"></small>
                               </div>
                               <div class="col-6 appendFile d-flex">
-
                               </div>
                           </div>
                       </div>

@@ -42,9 +42,9 @@ class SyllabusContentController extends Controller
                     return $subject->subject->title;
                 })
                 ->addColumn('action', function ($item) {
-                    $btn = '<button class="btn btn-warning ml-2 viewSyllabusBtn" data-id="' . $item->id . '"  data-url="' . route('syllabus-content.show', $item->id) . '"><i class="bi bi-eye-fill"></i></button>';
-                    $btn .= '&nbsp;<button class="btn btn-primary editSyllabusBtn" data-id="' . $item->id . '" data-url="' . route('syllabus-content.edit', $item->id) . '"><i class="bi bi-pencil-square"></i></button>';
-                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deleteSyllabusBtn" data-id="' . $item->id . '"><i class="bi bi-trash-fill"></i></button>';
+                    $btn = '<button class="btn btn-warning ml-2 viewSyllabusBtn" type="button" data-id="' . $item->id . '"  data-url="' . route('syllabus-content.show', $item->id) . '"><i class="bi bi-eye-fill"></i></button>';
+                    $btn .= '&nbsp;<button class="btn btn-primary editSyllabusBtn" type="button" data-id="' . $item->id . '" data-url="' . route('syllabus-content.show', $item->id) . '"><i class="bi bi-pencil-square"></i></button>';
+                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deleteSyllabusBtn" data-id="' . $item->id . '" data-url="' . route('syllabus-content.destroy', $item->id) . '"><i class="bi bi-trash-fill"></i></button>';
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -182,7 +182,7 @@ class SyllabusContentController extends Controller
     public function show(string $id)
     {
         try {
-            $syllabus = SyllabusContent::with('degree', 'batch', 'batchType', 'yearSemester', 'subject','syllabusSubject')->find($id);
+            $syllabus = SyllabusContent::with('degree', 'batch', 'batchType', 'yearSemester', 'subject', 'syllabusSubject')->find($id);
             return response()->json(['status' => true, 'message' => $syllabus]);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => $e->getMessage()]);
@@ -210,6 +210,15 @@ class SyllabusContentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $syllabus = SyllabusContent::find($id);
+            if ($syllabus) {
+                SyllabusContentSubject::where('syllabus_content_id', $id)->delete();
+            }
+            $syllabus->delete();
+            return response()->json(['status' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()]);
+        }
     }
 }
