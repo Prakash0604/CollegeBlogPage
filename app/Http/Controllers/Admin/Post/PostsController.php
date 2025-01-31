@@ -35,8 +35,8 @@ class PostsController extends Controller
             return DataTables::of($posts)
                 ->addIndexColumn()
                 ->addColumn('action', function ($item) {
-                    $btn = '<button class="btn btn-primary editPostBtn" data-id="' . $item->id . '" data-url="' . route('post.edit',$item->id) . '">Edit</button>';
-                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deletePostBtn" data-id="' . $item->id . '">Delete</button>';
+                    $btn = '<button class="btn btn-primary editPostBtn" data-id="' . $item->id . '" data-url="' . route('post.edit',$item->id) . '"><i class="bi bi-pencil-square"></i></button>';
+                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deletePostBtn" data-id="' . $item->id . '"><i class="bi bi-trash-fill"></i></button>';
                     return $btn;
                 })
                 ->addColumn('description', function ($desc) {

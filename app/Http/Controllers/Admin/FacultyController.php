@@ -29,10 +29,10 @@ class FacultyController extends Controller
             return DataTables::of($degrees)
                 ->addIndexColumn()
                 ->addColumn('action', function ($item) {
-                    $btn = '<button class="btn btn-warning ml-2 assignSubjectBtn" data-id="' . $item->id . '">Assign Subject</button>';
-                    $btn .= '&nbsp;<button class="btn btn-info ml-2 viewSubjectBtn" data-id="' . $item->id . '">View Detail</button>';
-                    $btn .= '&nbsp;<button class="btn btn-primary editDegreeBtn" data-id="' . $item->id . '" data-url="' . route('faculty.edit', $item->id) . '">Edit</button>';
-                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deleteDegreeBtn" data-id="' . $item->id . '" data-url="' . route('faculty.destroy', $item->id) . '">Delete</button>';
+                    $btn = '<button class="btn btn-warning ml-2 assignSubjectBtn" data-id="' . $item->id . '"><i class="bi bi-plus-lg"></i></button>';
+                    $btn .= '&nbsp;<button class="btn btn-info ml-2 viewSubjectBtn" data-id="' . $item->id . '"><i class="bi bi-eye-fill"></i></button>';
+                    $btn .= '&nbsp;<button class="btn btn-primary editDegreeBtn" data-id="' . $item->id . '" data-url="' . route('faculty.edit', $item->id) . '"><i class="bi bi-pencil-square"></i></button>';
+                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deleteDegreeBtn" data-id="' . $item->id . '" data-url="' . route('faculty.destroy', $item->id) . '"><i class="bi bi-trash-fill"></i></button>';
                     return $btn;
                 })
                 ->addColumn('status', function ($status) {
@@ -94,7 +94,7 @@ class FacultyController extends Controller
             return DataTables::of($rows)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    return '<button type="button" class="btn btn-danger deleteDegreeSubjectBtn" data-url="' . e($row['delete_url']) . '">Delete</button>';
+                    return '<button type="button" class="btn btn-danger deleteDegreeSubjectBtn" data-url="' . e($row['delete_url']) . '"><i class="bi bi-trash-fill"></i></button>';
                 })
                 ->rawColumns(['action'])
                 ->make(true);

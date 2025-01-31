@@ -77,7 +77,7 @@
                     <div class="menu-icon">
                         <i class="fab fa-simplybuilt"></i>
                     </div>
-                    <div class="menu-text"><i class="bi bi-stickies-fill"></i> Posts</div>
+                    <div class="menu-text"><i class="bi bi-newspaper"></i> Posts</div>
                 </a>
             </div>
 
@@ -86,7 +86,7 @@
                     <div class="menu-icon">
                         <i class="fab fa-simplybuilt"></i>
                     </div>
-                    <div class="menu-text"><i class="bi bi-stickies-fill"></i> Degree</div>
+                    <div class="menu-text"><i class="bi bi-house-gear-fill"></i> Degree</div>
                 </a>
             </div>
             <div class="menu-item">
@@ -94,7 +94,7 @@
                     <div class="menu-icon">
                         <i class="fab fa-simplybuilt"></i>
                     </div>
-                    <div class="menu-text"><i class="bi bi-stickies-fill"></i> Syllabus Content</div>
+                    <div class="menu-text"><i class="bi bi-journal-check"></i> Syllabus Content</div>
                 </a>
             </div>
         </div>
