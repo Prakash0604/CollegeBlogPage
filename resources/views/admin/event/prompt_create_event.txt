@@ -55,7 +55,7 @@ The **Event Module** is designed to create and manage events, including the abil
    - **Requirements**: Save the schedule details and display them.
    - **Achieved**:
      - The **Save Schedule** button captures the entered details (start time, end time, description) and adds them to a schedule list.
-     - The schedule list is displayed under the event, and users can see the scheduled times and descriptions for each date.
+     - The schedule lis t is displayed under the event, and users can see the scheduled times and descriptions for each date.
      - **View and Remove Schedule** options are provided in the list, allowing users to view or delete any schedule.
 
 ---
@@ -69,6 +69,7 @@ The **Event Module** is designed to create and manage events, including the abil
 
 The event module is now capable of creating events, selecting dates, and managing schedules dynamically, meeting the core requirements for event scheduling.
 
-problems --
-when clickign on mange schedule not opening the pop up modal of event schedule 
- 
+2 more requirment in point 6 which is
+    i. apply to all  dates radio which will make schedule  to all the dates that is present
+    ii. apply to selected date radio which will expand the modal showing all the dates and we will have check ox on the left side  to  apply custom ok
+

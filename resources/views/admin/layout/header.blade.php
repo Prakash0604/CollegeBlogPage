@@ -27,4 +27,5 @@
         @endforeach
     @endisset
 
+    @stack('style-items')
 </head>
