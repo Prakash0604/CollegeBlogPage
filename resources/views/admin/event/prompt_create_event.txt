@@ -1,0 +1,28 @@
+Here's a summary of what has been done and the new updates:
+
+    Event Creation Form:
+        Created a form for event creation, allowing users to enter event name, description, and select dates.
+        Added a toggle to switch between selecting a date range and individual dates.
+
+    Date Selection:
+        Implemented a date range selection (start_date and end_date) or individual date selection via dynamically generated date input fields.
+        Added functionality to add multiple individual dates and manage their schedules.
+
+    Schedule Management:
+        A modal popup was created for managing time slots for events. Users can specify a start and end time for each date, and these times are validated to ensure they are in the correct order.
+        Once a valid time slot is added, it’s displayed in a list under the modal.
+        Users can remove time slots if needed.
+
+    Validation:
+        Implemented validation to ensure that a time slot has a valid range (end time after start time).
+        Added functionality to ensure time slots do not overlap for a given date by checking against the last scheduled time for that date.
+
+    Dynamic Date Input:
+        When adding individual dates, the system dynamically generates a date input and a button for managing its schedule.
+        Each date input has a button to manage time slots for that specific date.
+
+    New Updates:
+        Fixed the issue where the date popup (calendar selection) was being triggered unnecessarily.
+        Corrected the issue where removed time slots would not update or be cleared from the list properly.
+
+        
