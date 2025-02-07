@@ -67,7 +67,7 @@
                     </div>
                     <div class="menu-text"><i class="bi bi-journal-check"></i> Syllabus Content</div>
                 </a>
-            </div>  
+            </div>
           <div class="menu-item">
                 <a href="{{ route('event.index') }}" class="menu-link">
                     <div class="menu-icon">

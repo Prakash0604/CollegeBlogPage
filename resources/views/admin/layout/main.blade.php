@@ -145,5 +145,6 @@
 	<!-- END #app -->
 
 	@include('admin.layout.footer-script')
+    @stack('script-items')
 </body>
 </html>

@@ -9,6 +9,8 @@
           <div
             class="table-responsive mt-4 mb-4"
           >
+{{-- form  --}}
+          @include('admin.event.create_event')
             <table
                 class="table table-bordered table-striped "
                 id="fetch-post-data"
