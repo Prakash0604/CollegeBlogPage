@@ -31,6 +31,8 @@
             <input type="date" name="start_date" class="form-control">
             <label class="form-label mt-2">End Date <span class="text-danger">*</span></label>
             <input type="date" name="end_date" class="form-control">
+            <button type="button" class="btn btn-secondary mt-2" id="applyDateRange">Apply Range</button>
+            <div id="dateListSection" class="mt-3"></div>
         </div>
 
         <!-- Individual Dates Selection -->
@@ -39,33 +41,50 @@
             <div id="selectedDates" class="mt-2"></div>
         </div>
 
-        <button type="submit" class="btn btn-success">Save Event</button>
+        <button type="submit" class="btn btn-warning">Save Event</button>
     </form>
 </div>
 
-<!-- Event Date Schedule Popup -->
-<div class="modal fade" id="eventDateModal" tabindex="-1" aria-hidden="true">
+<!-- Event Date Schedule -->
+<div id="scheduleSection" class="d-none mt-4">
+    <h4>Manage Event Schedule</h4>
+    <div id="scheduleList"></div>
+    <button type="button" class="btn btn-primary" id="addScheduleBtn">Add Schedule</button>
+</div>
+
+<!-- Modal for Adding Schedule -->
+<div id="scheduleModal" class="modal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Manage Event Schedule</h5>
+                <h5 class="modal-title">Manage Schedule</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="eventScheduleForm">
-                    <label class="form-label">Add Time Slot</label>
-                    <div class="mb-3">
-                        <input type="time" class="form-control" id="start_time" required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="time" class="form-control" id="end_time" required>
-                    </div>
-                    <button type="button" class="btn btn-success" id="addSchedule">Add Schedule</button>
-                </form>
-                <div id="scheduleList" class="mt-3"></div>
+                <div class="mb-3">
+                    <label class="form-label">Start Time (HH:MM)</label>
+                    <input type="time" class="form-control" id="startTime">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">End Time (HH:MM)</label>
+                    <input type="time" class="form-control" id="endTime">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" id="scheduleDescription"></textarea>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="applyScheduleTo" id="applyToAll" value="all">
+                    <label class="form-check-label" for="applyToAll">Apply to All Dates</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="applyScheduleTo" id="applyToSelected" value="selected">
+                    <label class="form-check-label" for="applyToSelected">Apply to Selected Date</label>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveScheduleBtn">Save Schedule</button>
             </div>
         </div>
     </div>
@@ -75,8 +94,10 @@
 <script>
     $(document).ready(function () {
         let selectedDates = new Set();
-        let latestEndTime = {}; // Store latest end time for each date
+        let selectedRangeDates = []; // For managing selected range dates
+        let selectedDateForSchedule = ""; // Store selected date for schedule
 
+        // Toggle between range and individual date selection
         function updateDateSelectionVisibility() {
             if ($('#rangeToggle').is(':checked')) {
                 $('#dateRangeSection').removeClass('d-none');
@@ -87,14 +108,22 @@
             }
         }
 
-        function addDateInput() {
-            let dateInput = $('<input>').attr({ type: 'date', class: 'form-control my-2 date-picker' });
-            let scheduleBtn = $('<button>').text('Manage Schedule').addClass('btn btn-sm btn-primary mx-2 openSchedule');
-            let dateWrapper = $('<div>').addClass('d-flex align-items-center').append(dateInput, scheduleBtn);
-
+        // Add a date input field and manage schedule button
+        function addDateInput(dateVal) {
+            let dateWrapper = $('<div>').addClass('d-flex align-items-center my-2');
+            let dateInput = $('<input>').attr({ type: 'date', class: 'form-control date-picker' }).val(dateVal);
+            let scheduleBtn = $('<button>').text('Manage Schedule').addClass('btn btn-sm btn-primary mx-2 openSchedule').data('date', dateVal);
+            dateWrapper.append(dateInput, scheduleBtn);
             $('#selectedDates').append(dateWrapper);
         }
 
+        // Show schedule section for each date
+        function openScheduleSection(date) {
+            selectedDateForSchedule = date; // Store the selected date for schedule
+            $('#scheduleModal').modal('show');
+        }
+
+        // Validate and add a date
         function validateAndAddDate(dateVal) {
             if (!dateVal) return;
             if (selectedDates.has(dateVal)) {
@@ -102,37 +131,59 @@
                 return;
             }
             selectedDates.add(dateVal);
-            addDateInput();
+            addDateInput(dateVal);
         }
 
-        function openSchedulePopup(date) {
-            $('#eventDateModal').data('selectedDate', date).modal('show');
-        }
+        // Save schedule
+        $('#saveScheduleBtn').click(function () {
+            let startTime = $('#startTime').val();
+            let endTime = $('#endTime').val();
+            let description = $('#scheduleDescription').val();
+            let applyToAll = $('#applyToAll').is(':checked');
+            let applyToSelected = $('#applyToSelected').is(':checked');
 
-        function getNextAvailableStartTime(date) {
-            return latestEndTime[date] || '08:00'; // Default start time
-        }
-
-        function validateTimeSlot(start, end, date) {
-            if (!start || !end || start >= end) {
-                alert('Invalid time slot. End time must be later than start time.');
-                return false;
+            if (startTime && endTime && description) {
+                if (applyToAll) {
+                    selectedDates.forEach(function (date) {
+                        $('#scheduleList').append(`
+                            <div class="schedule-item">
+                                <p>${date}: ${startTime} - ${endTime}, Description: ${description}
+                                    <i class="fas fa-eye mx-2 viewSchedule" style="cursor:pointer;" data-desc="${description}"></i>
+                                    <i class="fas fa-trash mx-2 removeSchedule" style="cursor:pointer;" data-date="${date}"></i>
+                                </p>
+                            </div>
+                        `);
+                    });
+                } else if (applyToSelected) {
+                    $('#scheduleList').append(`
+                        <div class="schedule-item">
+                            <p>${selectedDateForSchedule}: ${startTime} - ${endTime}, Description: ${description}
+                                <i class="fas fa-eye mx-2 viewSchedule" style="cursor:pointer;" data-desc="${description}"></i>
+                                <i class="fas fa-trash mx-2 removeSchedule" style="cursor:pointer;" data-date="${selectedDateForSchedule}"></i>
+                            </p>
+                        </div>
+                    `);
+                }
+                $('#scheduleModal').modal('hide');
+            } else {
+                alert('Please fill all the fields!');
             }
+        });
 
-            let lastEndTime = getNextAvailableStartTime(date);
-            if (start < lastEndTime) {
-                alert(`New time slot must start after ${lastEndTime}`);
-                return false;
-            }
+        // View Schedule Popup
+        $(document).on('click', '.viewSchedule', function () {
+            let description = $(this).data('desc');
+            alert(`Description: ${description}`);
+        });
 
-            latestEndTime[date] = end;
-            return true;
-        }
+        // Remove Schedule
+        $(document).on('click', '.removeSchedule', function () {
+            let date = $(this).data('date');
+            $(this).closest('.schedule-item').remove();
+            alert(`Schedule for ${date} has been removed.`);
+        });
 
-        function confirmDateRemoval(date) {
-            return confirm(`Are you sure you want to remove the date ${date}?`);
-        }
-
+        // Event listeners
         $('input[name="date_selection"]').change(updateDateSelectionVisibility);
 
         $('#addDate').click(function () {
@@ -141,30 +192,44 @@
         });
 
         $(document).on('click', '.openSchedule', function () {
-            let date = $(this).prev().val();
+            let date = $(this).data('date');
             if (!date) {
                 alert('Please select a date first!');
                 return;
             }
-            openSchedulePopup(date);
+            openScheduleSection(date);
         });
 
-        $('#addSchedule').click(function () {
-            let selectedDate = $('#eventDateModal').data('selectedDate');
-            let startTime = $('#start_time').val();
-            let endTime = $('#end_time').val();
-
-            if (validateTimeSlot(startTime, endTime, selectedDate)) {
-                $('#scheduleList').append(`<p>${selectedDate}: ${startTime} - ${endTime} <i class="fas fa-trash-alt remove-slot"></i></p>`);
+        // Apply Date Range
+        $('#applyDateRange').click(function () {
+            const startDate = $('[name="start_date"]').val();
+            const endDate = $('[name="end_date"]').val();
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                const dateList = [];
+                while (start <= end) {
+                    dateList.push(new Date(start).toISOString().split('T')[0]);
+                    start.setDate(start.getDate() + 1);
+                }
+                displayDateList(dateList);
             }
         });
 
-        $(document).on('click', '.remove-slot', function() {
-            let confirmation = confirmDateRemoval($(this).closest('p').text());
-            if (confirmation) {
-                $(this).closest('p').remove();
-            }
-        });
+        // Display the list of dates for the selected range
+        function displayDateList(dates) {
+            const dateListSection = $('#dateListSection');
+            dateListSection.empty();
+            dates.forEach(date => {
+                const div = $('<div>').addClass('d-flex justify-content-between align-items-center mb-2');
+                div.html(`
+                    <span>${date}</span>
+                    <button type="button" class="btn btn-info btn-sm openSchedule" data-date="${date}">Manage Schedule</button>
+                `);
+                dateListSection.append(div);
+                selectedRangeDates.push(date); // Store the selected range dates
+            });
+        }
     });
 </script>
 @endpush
