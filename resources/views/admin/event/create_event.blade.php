@@ -1,6 +1,6 @@
 <!-- Event Creation Form -->
 <div class="container mt-4">
-    <h2>Create Event</h2>
+    <h2 class="text-white">Create Event</h2>
     <form id="eventForm">
         @csrf
         <div class="mb-3">
@@ -46,7 +46,7 @@
             <input type="date" name="start_date" class="form-control">
             <label class="form-label mt-2">End Date <span class="text-danger">*</span></label>
             <input type="date" name="end_date" class="form-control">
-            <button type="button" class="btn btn-secondary mt-2" id="applyDateRange">Apply Range</button>
+            <button type="button" class="btn text-white btn-info mt-2" id="applyDateRange">Apply Range</button>
 
 
 
@@ -62,20 +62,10 @@
             <div id="selectedDates" class="mt-2"></div>
         </div>
 
-        <button type="submit" class="btn btn-warning">Save Event</button>
+        <button type="submit" class="btn btn-warning " style="margin-left:90%">Save Event</button>
     </form>
 </div>
 
-<!-- Event Date Schedule -->
-<!-- Event Date Schedule -->
-<div id="scheduleSection" class="d-none mt-4 p-4 shadow-lg rounded bg-light">
-    <h4 class="mb-4">Manage Event Schedule</h4>
-    <div id="scheduleList">
-        <!-- Example List Item -->
-
-    </div>
-    <button type="button" class="btn btn-primary" id="addScheduleBtn">Add Schedule</button>
-</div>
 
 
 <!-- Modal for Adding Schedule -->
@@ -106,7 +96,19 @@
             </div>
         </div>
     </div>
+    <!-- Event Date Schedule -->
+<!-- Event Date Schedule -->
+<div id="scheduleSection" class="d-none mt-4 p-4 shadow-lg rounded bg-light">
+    <h4 class="mb-4">Manage Event Schedule</h4>
+    <div id="scheduleList">
+        <!-- Example List Item -->
+
+    </div>
+
 </div>
+
+</div>
+
 
 @push('script-items')
 <script>
@@ -164,7 +166,7 @@
 
     // Create the schedule row and append it to the table
     $('#scheduleList').append(`
-        <table class="table table-striped mt-3">
+        <table class=" dataTable table table-striped mt-3">
             <thead>
                 <tr>
                     <th>Date</th>

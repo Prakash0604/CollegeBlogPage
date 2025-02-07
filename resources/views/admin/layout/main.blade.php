@@ -3,7 +3,7 @@
 
 @include('admin.layout.header')
 
-<body>
+<body class="tiger-stripes">
 	<!-- BEGIN #loader -->
 	<div id="loader" class="app-loader">
 		<span class="spinner"></span>
@@ -129,7 +129,8 @@
 		<!-- END #header -->
 
 		<!-- BEGIN #sidebar -->
-		@include('admin.layout.sidebar')
+        <div class="sidebar-container onionskin">
+		@include('admin.layout.sidebar')</div>
 
 		<div class="app-sidebar-bg" data-bs-theme="dark"></div>
 		<div class="app-sidebar-mobile-backdrop"><a href="#" data-dismiss="app-sidebar-mobile"
