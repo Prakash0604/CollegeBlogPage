@@ -67,6 +67,14 @@
                     </div>
                     <div class="menu-text"><i class="bi bi-journal-check"></i> Syllabus Content</div>
                 </a>
+            </div>  
+          <div class="menu-item">
+                <a href="{{ route('event.index') }}" class="menu-link">
+                    <div class="menu-icon">
+                        <i class="fab fa-simplybuilt"></i>
+                    </div>
+                    <div class="menu-text"><i class="bi bi-journal-check"></i> Event Management</div>
+                </a>
             </div>
         </div>
         <!-- END menu -->

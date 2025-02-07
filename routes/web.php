@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
+use App\Http\Controllers\Admin\Event\EventController;
 use App\Http\Controllers\Admin\FacultyController;
 use App\Http\Controllers\Admin\Post\PostsController;
 use App\Http\Controllers\Admin\SyllabusContentController;
@@ -46,5 +47,7 @@ Route::middleware('auth')->group(function(){
         Route::post('syllabus/get/type/semester',[SyllabusContentController::class,'getSemesterByType']);
         Route::post('syllabus/get/type/semester/subject',[SyllabusContentController::class,'getSubject']);
         Route::get('logout',[AuthController::class,'logout'])->name('logout');
+
+       Route::resource('event', EventController::class);
     });
 });

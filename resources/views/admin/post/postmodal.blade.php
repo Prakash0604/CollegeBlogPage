@@ -80,7 +80,7 @@
                   <div class="modal-body">
                       <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
                           <div class="carousel-inner">
-                            
+
                           </div>
                           <button class="carousel-control-prev" type="button"
                               data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
