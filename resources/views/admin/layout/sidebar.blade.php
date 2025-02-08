@@ -76,6 +76,15 @@
                     <div class="menu-text"><i class="bi bi-journal-check"></i> Event Management</div>
                 </a>
             </div>
+
+            <div class="menu-item">
+                <a href="{{ route('calendar') }}" class="menu-link">
+                    <div class="menu-icon">
+                        <i class="fab fa-simplybuilt"></i>
+                    </div>
+                    <div class="menu-text"><i class="bi bi-calendar-day"></i> Calendar</div>
+                </a>
+            </div>
         </div>
         <!-- END menu -->
     </div>

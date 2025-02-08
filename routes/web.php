@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\calendar\CalendarController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Event\EventController;
 use App\Http\Controllers\Admin\FacultyController;
@@ -49,5 +50,7 @@ Route::middleware('auth')->group(function(){
         Route::get('logout',[AuthController::class,'logout'])->name('logout');
 
        Route::resource('event', EventController::class);
+       Route::get('calendar',[CalendarController::class,'index'])->name('calendar');
+       Route::get('event/calendar/get',[EventController::class,'getEvent'])->name('calendar.events');
     });
 });

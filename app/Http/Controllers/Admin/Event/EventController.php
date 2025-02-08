@@ -37,6 +37,23 @@ class EventController extends Controller
         return view('admin.event.index');
     }
 
+    public function getEvent(Request $request)
+    {
+        // try {
+        //     $events = Event::with('eventDates','eventSchedules')->get();
+        //     return response()->json($events);
+        // } catch (\Exception $e) {
+        //     return response()->json(['status' => false, 'message' => $e->getMessage()]);
+        // }
+
+        // For testing only
+        return response()->json([
+            ['title' => 'Laravel Workshop', 'start' => '2025-02-10', 'end' => '2025-02-12', "color" => "#00ff00"],
+            ['title' => 'Conference', 'start' => '2025-02-15', "color" => "#ff0000"],
+            ['title' => 'Meeting', 'start' => '2025-02-10', "color" => "#0000ff"],
+        ]);
+    }
+
     /**
      * Store a newly created event in storage.
      */
