@@ -11,7 +11,8 @@ class EventSchedule extends Model
 
     // Fillable fields for mass assignment
     protected $fillable = [
-        'event_date_id',
+        'event_id',
+        'date',
         'start_time',
         'end_time',
         'description',

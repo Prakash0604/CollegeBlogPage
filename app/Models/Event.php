@@ -15,19 +15,15 @@ class Event extends Model
         'description',
         'start_date',
         'end_date',
-        'is_full_day',
+        'type',
+        'color',
+        'status'
     ];
 
-    // Relationship: An event has many event dates
-    public function eventDates()
-    {
-        return $this->hasMany(EventDate::class);
+    public function eventSheduled(){
+        return $this->hasMany(EventSchedule::class,'event_id');
     }
 
-    // Relationship: An event can have many event schedules through event dates
-    public function eventSchedules()
-    {
-        return $this->hasManyThrough(EventSchedule::class, EventDate::class);
-    }
+
 }
 

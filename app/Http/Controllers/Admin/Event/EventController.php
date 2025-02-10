@@ -9,7 +9,9 @@ use App\Services\EventService;
 use App\Http\Requests\EventRequest;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\EventSchedule;
 use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\Facades\DataTables;
 
 class EventController extends Controller
 {
@@ -27,49 +29,88 @@ class EventController extends Controller
     {
         if ($request->ajax()) {
             $events = Event::all();
-
-            return response()->json([
-                'status' => true,
-                'data' => $events
-            ]);
+            return DataTables::of($events)
+                ->addIndexColumn()
+                ->addColumn('action', function ($item) {
+                    $btn = '<button class="btn btn-primary editPostBtn" data-id="' . $item->id . '" data-url="' . route('post.edit', $item->id) . '"><i class="bi bi-pencil-square"></i></button>';
+                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deletePostBtn" data-id="' . $item->id . '"><i class="bi bi-trash-fill"></i></button>';
+                    return $btn;
+                })
+                ->addColumn('title', function ($title) {
+                    return ucfirst($title->title);
+                })->addColumn('type', function ($type) {
+                    return ucfirst($type->type);
+                })
+                ->rawColumns(['action'])
+                ->make(true);
         }
+        $extraJs = array_merge(
+            config('js-map.admin.datatable.script')
+        );
 
-        return view('admin.event.index');
+        $extraCs = array_merge(
+            config('js-map.admin.datatable.style')
+        );
+
+        return view('admin.event.index', compact('extraJs', 'extraCs'));
     }
 
-    public function getEvent(Request $request)
+    public function getEvent()
     {
-        // try {
-        //     $events = Event::with('eventDates','eventSchedules')->get();
-        //     return response()->json($events);
-        // } catch (\Exception $e) {
-        //     return response()->json(['status' => false, 'message' => $e->getMessage()]);
-        // }
+        try {
+            $events = Event::with('eventSheduled')->get();
+            $formattedEvents = $events->map(function ($event) {
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'description' => $event->description,
+                    'start_date' => $event->start_date,
+                    'end_date' => $event->end_date,
+                    'color' => $event->color,
+                    'event_sheduled' => $event->eventSheduled,
+                ];
+            });
 
-        // For testing only
-        return response()->json([
-            ['title' => 'Laravel Workshop', 'start' => '2025-02-10', 'end' => '2025-02-12', "color" => "#00ff00"],
-            ['title' => 'Conference', 'start' => '2025-02-15', "color" => "#ff0000"],
-            ['title' => 'Meeting', 'start' => '2025-02-10', "color" => "#0000ff"],
-        ]);
+            return response()->json(["status" => true, "event" => $formattedEvents]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()]);
+        }
     }
+
 
     /**
      * Store a newly created event in storage.
      */
-    public function store(EventRequest $request)
+    public function store(Request $request)
     {
+        // dd($request->all());
         DB::beginTransaction();
         try {
-            $data = $request->validated();
-            $data['user_id'] = Auth::id();  // If you have user associations
-            $event = Event::create($data);  // Create a new Event
+            $event = Event::create([
+                'title' => $request->event_title,
+                'description' => $request->event_description,
+                'type' => $request->date_selection,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'color' => $request->eventColor
+            ]);
 
+
+            if ($request->has('eventDate')) {
+                foreach ($request->eventDate as $key => $date) {
+                    EventSchedule::create([
+                        'event_id' => $event->id,
+                        'date' => $date,
+                        'start_time' => $request->eventStarttime[$key],
+                        'end_time' => $request->eventendTime[$key],
+                        'description' => $request->eventDescription[$key]
+                    ]);
+                }
+            }
             DB::commit();
             return response()->json([
                 'status' => true,
                 'message' => 'Event created successfully.',
-                'event' => $event
             ]);
         } catch (\Exception $e) {
             DB::rollBack();

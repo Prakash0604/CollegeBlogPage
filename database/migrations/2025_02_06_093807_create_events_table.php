@@ -11,9 +11,11 @@ class CreateEventsTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->boolean('is_full_day')->default(false);
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->enum('type',['range','individual']);
+            $table->string('color')->nullable();
+            $table->enum('status',['active','inactive'])->default('active');
             $table->timestamps();
         });
     }

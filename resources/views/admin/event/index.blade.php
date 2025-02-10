@@ -1,32 +1,28 @@
 @extends('admin.layout.main')
 @section('content')
     <div class="container-fluid ">
-        <button type="button" class="btn " id="addEventBtnToggle">
+        <button type="button" class="btn  btn-primary" id="addEventBtnToggle">
             <i class="bi bi-plus-lg "></i>  Add Event
           </button>
           {{-- @include('admin.event.eventmodal') --}}
+          @include('admin.event.create_event')
 
           <div
             class="table-responsive mt-4 mb-4"
           >
 {{-- form  --}}
-
-         <div class="card p-4 mb-4  create_event_container">
-            @include('admin.event.create_event')
-         </div>
-         <h4>Existing Events</h4>
             <table
                 class="table table-bordered table-striped  "
-                id="fetch-post-data"
+                id="fetch-event-data"
             >
                 <thead>
                     <tr>
                         <th scope="col">S.N</th>
-                        <th scope="col">Image</th>
                         <th scope="col">Title</th>
                         <th scope="col">Description</th>
                         <th scope="col">Type</th>
-                        <th scope="col">Visibility</th>
+                        <th scope="col">Starting Date</th>
+                        <th scope="col">Ending Date</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -47,14 +43,6 @@
     @endpush
 
     @push('script-items')
-    <script>
-        $(document).ready(function () {
-            // Add Event Button Toggle
-            $("#addEventBtnToggle").click(function () {
-                $(".create_event_container").toggle();
-            });
-        });
-    </script>
 
 <<script>
     // Function to apply alternating gradient colors (Onion Skin)

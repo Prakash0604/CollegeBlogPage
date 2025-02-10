@@ -1,16 +1,12 @@
 $(document).ready(function () {
     getData();
-    $(".description").summernote({
-        height: 400,
-    });
 });
 
 function getData() {
     $("#fetch-event-data").DataTable({
         processing: true,
         serverSide: true,
-        ajax: "/admin/event",  // Change URL for events
-        order: [2, "asc"],
+        ajax: "event",
         columns: [
             {
                 data: "DT_RowIndex",
@@ -18,12 +14,7 @@ function getData() {
                 orderable: false,
                 searchable: false,
             },
-            {
-                data: "image",
-                name: "image",
-                orderable: false,
-                searchable: false,
-            },
+
             {
                 data: "title",
                 name: "title",
@@ -37,8 +28,11 @@ function getData() {
                 name: "type",
             },
             {
-                data: "visibility",
-                name: "visibility",
+                data: "start_date",
+                name: "start_date",
+            }, {
+                data: "end_date",
+                name: "end_date",
             },
             {
                 data: "action",
@@ -52,36 +46,51 @@ function getData() {
 
 function clear() {
     $(".warnmessage").text("");
-    $(".description").summernote("code", "");
+    // $(".description").summernote("code", "");
     $("select").removeClass("is-invalid");
     $("input").removeClass("is-invalid");
     $(".appendImage").html("");
 }
 
-$(document).on("click", "#addEventBtn", function () {
+$(document).on("click", "#addEventBtnToggle", function () {
     clear();
-    $("#formModal").modal("show");
-    $("#staticBackdropLabel").text("Add Event");
-    $(".addForm").attr("id", "eventAdd");
-    $("#eventAdd")[0].reset();
-    $("#createEventBtn").show();
-    $("#updateEventBtn").hide();
+    $("#createEventModal").modal("show");
+    // $("#staticBackdropLabel").text("Add Event");
+    // $(".addForm").attr("id", "eventAdd");
+    // $("#eventAdd")[0].reset();
+    // $("#createEventBtn").show();
+    // $("#updateEventBtn").hide();
 });
 
 $(document)
-    .off("submit", "#eventAdd")
-    .on("submit", "#eventAdd", function (event) {
-        event.preventDefault();
+    .off("submit", "#storeEvent")
+    .on("submit", "#storeEvent", function (e) {
+        e.preventDefault();
         let formdata = new FormData(this);
-        $("#createEventBtn").prop("disabled", true);
+        $(".eventDate").each(function() {
+            formdata.append("eventDate[]", $(this).val());
+        });
+
+        $(".eventStartTime").each(function() {
+            formdata.append("eventStarttime[]", $(this).val());
+        });
+
+        $(".eventEndTime").each(function() {
+            formdata.append("eventendTime[]", $(this).val());
+        });
+
+        $(".eventDescription").each(function() {
+            formdata.append("eventDescription[]", $(this).val());
+        });
+        $("#saveEventBtn").prop("disabled", true);
         $.ajax({
-            url: "/admin/event",  // Change URL for events
+            url: "event",
             type: "post",
             data: formdata,
             processData: false,
             contentType: false,
             success: function (response) {
-                if (response.status == 200) {
+                if (response.status == true) {
                     Swal.fire({
                         icon: "success",
                         title: "Success",
@@ -89,8 +98,8 @@ $(document)
                         showConfirmButton: false,
                         timer: 1000,
                     });
-                    $("#eventAdd")[0].reset();
-                    $("#formModal").modal("hide");
+                    $("#storeEvent")[0].reset();
+                    $("#createEventModal").modal("hide");
                     $("#fetch-event-data").DataTable().destroy().clear();
                     getData();
                 }
@@ -106,7 +115,7 @@ $(document)
                 }
             },
             complete: function () {
-                $("#createEventBtn").prop("disabled", false);
+                $("#saveEventBtn").prop("disabled", false);
             },
         });
     });
@@ -197,31 +206,7 @@ $(document)
         });
     });
 
-$(document)
-    .off("click", ".deletImageBtn")
-    .on("click", ".deletImageBtn", function (e) {
-        e.preventDefault();
-        let uid = $(this).attr("data-id");
-        let button = $(this);
 
-        $.ajax({
-            url: "event/image/delete/" + uid,  // Change URL for events
-            type: "get",
-            success: function (response) {
-                if (response.status == true) {
-                    Swal.fire({
-                        icon: "success",
-                        text: "Image Removed Successfully",
-                        showConfirmButton: false,
-                        timer: 1000,
-                    });
-                    button.closest(".row").remove();
-                    $("#fetch-event-data").DataTable().destroy().clear();
-                    getData();
-                }
-            },
-        });
-    });
 
 $(document).off("submit", "#updateEvent").on("submit", "#updateEvent", function (e) {
     e.preventDefault();
@@ -257,25 +242,3 @@ $(document).off("submit", "#updateEvent").on("submit", "#updateEvent", function 
     });
 });
 
-$(document)
-    .off("click", ".imageListPopup")
-    .on("click", ".imageListPopup", function () {
-        let url = $(this).attr("data-url");
-        $(".carousel-inner").empty();
-        $.ajax({
-            url: url,
-            type: "get",
-            success: function (response) {
-                if (response.status == true) {
-                    $("#imageCrousalModal").modal("show");
-                    let images = response.message.attachment;
-                    $.each(images, function (index, data) {
-                        let html = `<div class="carousel-item ${index == 0 ? 'active' : ''}">
-                                  <img src="/storage/${data.image}" class="d-block w-100" alt="...">
-                              </div>`;
-                        $(".carousel-inner").append(html);
-                    });
-                }
-            },
-        });
-    });
