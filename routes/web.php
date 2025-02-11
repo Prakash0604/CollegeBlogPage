@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function(){
         Route::get('logout',[AuthController::class,'logout'])->name('logout');
 
        Route::resource('event', EventController::class);
+       Route::get('event/sheduled/delete/{id}',[EventController::class,'deleteSheduled']);
        Route::get('calendar',[CalendarController::class,'index'])->name('calendar');
        Route::get('event/calendar/get',[EventController::class,'getEvent'])->name('calendar.events');
     });

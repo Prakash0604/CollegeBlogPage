@@ -2,7 +2,7 @@
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form id="storeEvent">
+            <form id="storeEvent" class="addForm">
                 <div class="modal-header">
                     <h5 class="modal-title" id="title-heading">Create Event</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -13,11 +13,11 @@
                         @csrf
                         <div class="mb-3">
                             <label class="form-label">Event Name <span class="text-danger">*</span></label>
-                            <input type="text" name="event_title" class="form-control" required>
+                            <input type="text" name="event_title" id="event_title" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Description <span class="text-danger">*</span></label>
-                            <textarea name="event_description" class="form-control" rows="3" required></textarea>
+                            <textarea name="event_description" id="event_description" class="form-control" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Color</label>
@@ -47,12 +47,12 @@
                         <div class="mb-3">
                             <label class="form-label">Select Dates</label>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="date_selection" id="rangeToggle"
+                                <input class="form-check-input date_selection" type="radio" name="date_selection" id="rangeToggle"
                                     value="range">
                                 <label class="form-check-label" for="rangeToggle">Select Date Range</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="date_selection"
+                                <input class="form-check-input date_selection" type="radio" name="date_selection"
                                     id="individualToggle" value="individual">
                                 <label class="form-check-label" for="individualToggle">Select Individual
                                     Dates</label>
@@ -64,11 +64,11 @@
                             <div class="row">
                                 <div class="form-group col-md-6">
                                     <label class="form-label">Start Date <span class="text-danger">*</span></label>
-                                    <input type="date" name="start_date" class="form-control">
+                                    <input type="date" name="start_date" id="event_start_date" class="form-control">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="form-label">End Date <span class="text-danger">*</span></label>
-                                    <input type="date" name="end_date" class="form-control">
+                                    <input type="date" name="end_date" id="event_end_date" class="form-control">
                                 </div>
                             </div>
                             <button type="button" class="btn text-white btn-info mt-2" id="applyDateRange">Apply
@@ -84,10 +84,34 @@
 
                         </div>
 
+                        <div id="updateSheduleDate" class="d-none mt-4 p-4 shadow-lg rounded bg-light">
+                            <h4 class="mb-4">Manage Event Schedule</h4>
+                            <div id="scheduleList">
+                                <table class=" dataTable table updateeventSheduleTable table-striped mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Start Time</th>
+                                            <th>End Time</th>
+                                            <th>Description</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="fetchSheduleDate">
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+
+
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-warning" id="saveEventBtn">Save Event</button>
+                    <button type="submit" class="btn btn-warning" id="updateEventBtn">Update Event</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </form>

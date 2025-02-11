@@ -32,8 +32,8 @@ class EventController extends Controller
             return DataTables::of($events)
                 ->addIndexColumn()
                 ->addColumn('action', function ($item) {
-                    $btn = '<button class="btn btn-primary editPostBtn" data-id="' . $item->id . '" data-url="' . route('post.edit', $item->id) . '"><i class="bi bi-pencil-square"></i></button>';
-                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deletePostBtn" data-id="' . $item->id . '"><i class="bi bi-trash-fill"></i></button>';
+                    $btn = '<button class="btn btn-primary editEventBtn" data-id="' . $item->id . '" data-url="' . route('event.edit', $item->id) . '"><i class="bi bi-pencil-square"></i></button>';
+                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deleteEventBtn" data-id="' . $item->id . '"><i class="bi bi-trash-fill"></i></button>';
                     return $btn;
                 })
                 ->addColumn('title', function ($title) {
@@ -127,7 +127,7 @@ class EventController extends Controller
     public function edit(string $id)
     {
         try {
-            $event = Event::findOrFail($id);
+            $event = Event::with('eventSheduled')->findOrFail($id);
             return response()->json([
                 'status' => true,
                 'event' => $event
@@ -173,6 +173,9 @@ class EventController extends Controller
     {
         try {
             $event = Event::findOrFail($id);
+            if($event){
+                EventSchedule::where('event_id',$id)->delete();
+            }
             $event->delete();
 
             return response()->json([
@@ -184,6 +187,19 @@ class EventController extends Controller
                 'status' => false,
                 'message' => $e->getMessage()
             ]);
+        }
+    }
+
+    public function deleteSheduled($id){
+        try{
+            $event=EventSchedule::find($id)->delete();
+            if($event){
+                return response()->json(['status'=>true]);
+            }else{
+                return response()->json(['status'=>false,'message'=>"Something went wrong!"]);
+            }
+        }catch(\Exception $e){
+            return response()->json(['status'=>false,'message'=>$e->getMessage()]);
         }
     }
 }

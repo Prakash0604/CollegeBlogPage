@@ -30,7 +30,8 @@ function getData() {
             {
                 data: "start_date",
                 name: "start_date",
-            }, {
+            },
+            {
                 data: "end_date",
                 name: "end_date",
             },
@@ -58,8 +59,8 @@ $(document).on("click", "#addEventBtnToggle", function () {
     // $("#staticBackdropLabel").text("Add Event");
     // $(".addForm").attr("id", "eventAdd");
     // $("#eventAdd")[0].reset();
-    // $("#createEventBtn").show();
-    // $("#updateEventBtn").hide();
+    $("#saveEventBtn").show();
+    $("#updateEventBtn").hide();
 });
 
 $(document)
@@ -67,19 +68,19 @@ $(document)
     .on("submit", "#storeEvent", function (e) {
         e.preventDefault();
         let formdata = new FormData(this);
-        $(".eventDate").each(function() {
+        $(".eventDate").each(function () {
             formdata.append("eventDate[]", $(this).val());
         });
 
-        $(".eventStartTime").each(function() {
+        $(".eventStartTime").each(function () {
             formdata.append("eventStarttime[]", $(this).val());
         });
 
-        $(".eventEndTime").each(function() {
+        $(".eventEndTime").each(function () {
             formdata.append("eventendTime[]", $(this).val());
         });
 
-        $(".eventDescription").each(function() {
+        $(".eventDescription").each(function () {
             formdata.append("eventDescription[]", $(this).val());
         });
         $("#saveEventBtn").prop("disabled", true);
@@ -136,21 +137,24 @@ $(document)
             if (result.isConfirmed) {
                 $.ajax({
                     type: "DELETE",
-                    url: "/admin/event/" + id,  // Change URL for events
+                    url: "/admin/event/" + id,
                     headers: {
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
                             "content"
                         ),
                     },
                     success: function (response) {
-                        if (response.status == 200) {
+                        if (response.status == true) {
                             Swal.fire({
                                 icon: "success",
                                 title: "Event Deleted Successfully",
                                 showConfirmButton: false,
                                 timer: 1000,
                             });
-                            $("#fetch-event-data").DataTable().destroy().clear();
+                            $("#fetch-event-data")
+                                .DataTable()
+                                .destroy()
+                                .clear();
                             getData();
                         } else {
                             Swal.fire({
@@ -170,11 +174,13 @@ $(document)
 $(document)
     .off("click", ".editEventBtn")
     .on("click", ".editEventBtn", function () {
-        clear();
+        // clear();
+        $(".fetchSheduleDate").empty();
+
         let url = $(this).attr("data-url");
-        $("#createEventBtn").hide();
+        $("#saveEventBtn").hide();
         $("#updateEventBtn").show();
-        $("#staticBackdropLabel").text("Update Event");
+        // $("#staticBackdropLabel").text("Update Event");
         $(".addForm").attr("id", "updateEvent");
         $(".appendImage").html("");
         $.ajax({
@@ -182,63 +188,137 @@ $(document)
             url: url,
             success: function (response) {
                 if (response.status == true) {
-                    $("#formModal").modal("show");
+                    $("#createEventModal").modal("show");
                     console.log(response);
-                    $("#title").val(response.message.title);
-                    $("#description").summernote(
-                        "code",
-                        response.message.description
-                    );
-                    $("#type").val(response.message.type);
-                    $("#visibility").val(response.message.visibility);
-                    $("#id").val(response.message.id);
-                    let attachment = response.message.attachment;
-                    if (attachment.length > 0) {
-                        attachment.forEach((image) => {
-                            let img = image.image;
-                            let html = `<div class="row"> <img src="/storage/${img}" width="80" height="60" alt="" srcset="" class="mr-2 ml-2">
-                             &nbsp;<button class="btn btn-danger deletImageBtn" type="button" data-id="${image.id}">Remove</button></div>`;
-                            $(".appendImage").append(html);
+                    $("#event_title").val(response.event.title);
+                    $("#event_description").val(response.event.description);
+                    $("#eventColor").val(response.event.color);
+                    let sheduled = response.event.event_sheduled;
+                    if (
+                        response.event.type != null &&
+                        response.event.type == "range"
+                    ) {
+                        $("#rangeToggle")
+                            .prop("checked", true)
+                            .trigger("change");
+                        $("#event_start_date").val(response.event.start_date);
+                        $("#event_end_date").val(response.event.end_date);
+                        $("#applyDateRange").trigger("click");
+                        $("#updateSheduleDate").removeClass("d-none");
+                        let html = "";
+                        $.each(sheduled, function (index, data) {
+                            html = ` <tr>
+                        <td>${data.date}</td>
+                        <td>${data.start_time}</td>
+                        <td>${data.end_time}</td>
+                        <td>${data.description}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger mx-1 editremoveSchedule"  data-id="${data.id}" style="cursor:pointer;">Delete</button>
+                        </td>
+                    </tr>`;
+                            $(".fetchSheduleDate").append(html);
                         });
+                    } else {
+                        $("#individualToggle")
+                            .prop("checked", true)
+                            .trigger("change");
+                        $.each(sheduled, function (index, data) {
+                            html = ` <tr>
+                            <td>${data.date}</td>
+                            <td>${data.start_time}</td>
+                            <td>${data.end_time}</td>
+                            <td>${data.description}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-danger mx-1 editremoveSchedule" data-id="${data.id}"  style="cursor:pointer;">Delete</button>
+                            </td>
+                        </tr>`;
+                            $(".fetchSheduleDate").append(html);
+                        });
+                        // $("#")
                     }
+                    // $("#description").summernote(
+                    //     "code",
+                    //     response.message.description
+                    // );
+                    // $("#type").val(response.message.type);
+                    // $("#visibility").val(response.message.visibility);
+                    // $("#id").val(response.message.id);
+                    // let attachment = response.message.attachment;
+                    // if (attachment.length > 0) {
+                    //     attachment.forEach((image) => {
+                    //         let img = image.image;
+                    //         let html = `<div class="row"> <img src="/storage/${img}" width="80" height="60" alt="" srcset="" class="mr-2 ml-2">
+                    //          &nbsp;<button class="btn btn-danger deletImageBtn" type="button" data-id="${image.id}">Remove</button></div>`;
+                    //         $(".appendImage").append(html);
+                    //     });
+                    // }
                 }
             },
         });
     });
 
-
-
-$(document).off("submit", "#updateEvent").on("submit", "#updateEvent", function (e) {
-    e.preventDefault();
-    let id = $("#id").val();
-    let url = "/admin/event/" + id;  // Change URL for events
-    let formdata = new FormData(this);
-    formdata.append("_method", "PUT");
-    $.ajax({
-        method: "post",
-        url: url,
-        data: formdata,
-        contentType: false,
-        processData: false,
-        success: function (response) {
-            if (response.status == 200) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Event Updated Successfully",
-                    showConfirmButton: false,
-                    timer: 1000,
-                });
-
-                $("#fetch-event-data").DataTable().destroy().clear();
-                getData();
-                $("#formModal").modal("hide");
-            } else {
-                Swal.fire({
-                    icon: "warning",
-                    title: "Something went wrong!",
-                });
-            }
-        },
+$(document)
+    .off("click", ".editremoveSchedule")
+    .on("click", ".editremoveSchedule", function () {
+        let id = $(this).attr("data-id");
+        btnClick=$(this);
+        $.ajax({
+            type: "get",
+            url: "event/sheduled/delete/" + id,
+            success: function (response) {
+                if (response.status == true) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Deleted!",
+                        text: "Schedule Deleted Successfully!",
+                        showConfirmButton: false,
+                        timer: 1000,
+                    });
+                    btnClick.closest('tr').remove();
+                    $("#fetch-event-data").DataTable().destroy().clear();
+                    getData();
+                } else {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Warning",
+                        text: "Something went wrong!",
+                    });
+                }
+            },
+        });
     });
-});
+$(document)
+    .off("submit", "#updateEvent")
+    .on("submit", "#updateEvent", function (e) {
+        e.preventDefault();
+        let id = $("#id").val();
+        let url = "/admin/event/" + id; // Change URL for events
+        let formdata = new FormData(this);
+        formdata.append("_method", "PUT");
+        $.ajax({
+            method: "post",
+            url: url,
+            data: formdata,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.status == 200) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Event Updated Successfully",
+                        showConfirmButton: false,
+                        timer: 1000,
+                    });
 
+                    $("#fetch-event-data").DataTable().destroy().clear();
+                    getData();
+                    $("#formModal").modal("hide");
+                } else {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Something went wrong!",
+                    });
+                }
+            },
+        });
+    });
