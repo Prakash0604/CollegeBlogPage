@@ -17,7 +17,8 @@ class UserSeeder extends Seeder
             'full_name'=>'Super Admin',
             'email'=>'admin@gmail.com',
             'password'=>'admin@123',
-            'role'=>'Admin'
+            'role'=>'Admin',
+            'role_id'=>1,
         ]);
     }
 }

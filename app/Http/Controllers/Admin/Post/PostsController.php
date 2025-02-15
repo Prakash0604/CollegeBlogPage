@@ -29,15 +29,21 @@ class PostsController extends Controller
 
     public function index(Request $request)
     {
+        $access = $this->accessCheck('post');
         if ($request->ajax()) {
 
             $posts = Post::with('attachment')->get();
 
             return DataTables::of($posts)
                 ->addIndexColumn()
-                ->addColumn('action', function ($item) {
-                    $btn = '<button class="btn btn-primary editPostBtn" data-id="' . $item->id . '" data-url="' . route('post.edit',$item->id) . '"><i class="bi bi-pencil-square"></i></button>';
-                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deletePostBtn" data-id="' . $item->id . '"><i class="bi bi-trash-fill"></i></button>';
+                ->addColumn('action', function ($item) use ($access) {
+                    $btn='';
+                    if ($access['isedit'] == 'Y') {
+                        $btn = '<button class="btn btn-primary editPostBtn" data-id="' . $item->id . '" data-url="' . route('post.edit', $item->id) . '"><i class="bi bi-pencil-square"></i></button>';
+                    }
+                    if ($access['isdelete'] == 'Y') {
+                        $btn .= '&nbsp;<button class="btn btn-danger ml-2 deletePostBtn" data-id="' . $item->id . '"><i class="bi bi-trash-fill"></i></button>';
+                    }
                     return $btn;
                 })
                 ->addColumn('description', function ($desc) {
@@ -52,7 +58,7 @@ class PostsController extends Controller
                 ->addColumn('image', function ($image) {
                     // return '<span class="badge bg-primary">'..'"</span>';
                     $count = $image->attachment->count();
-                    return "<a type='button' data-id='" . $image->id . "'  class='imageListPopup d-flex' data-url='".route('post.edit',$image->id)."'><span class='btn btn-primary text-dark mx-auto'>" . $count . "</span></a>";
+                    return "<a type='button' data-id='" . $image->id . "'  class='imageListPopup d-flex' data-url='" . route('post.edit', $image->id) . "'><span class='btn btn-primary text-dark mx-auto'>" . $count . "</span></a>";
                 })
                 ->rawColumns(['action', 'image'])
                 ->make(true);
@@ -65,7 +71,7 @@ class PostsController extends Controller
             config('js-map.admin.summernote.style'),
             config('js-map.admin.datatable.style')
         );
-        return view('admin.post.post', ['extraJs' => $extraJs, 'extraCs' => $extraCs]);
+        return view('admin.post.post', ['extraJs' => $extraJs, 'extraCs' => $extraCs, 'access' => $access]);
     }
 
     /**
@@ -75,6 +81,10 @@ class PostsController extends Controller
     {
         DB::beginTransaction();
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('post'), 'isinsert');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $data = $request->validated();
             $data['user_id'] = Auth::id();
             $post = $this->postService->storeData($data);
@@ -103,6 +113,10 @@ class PostsController extends Controller
     public function edit(string $id)
     {
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('post'), 'isedit');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $post = Post::with('attachment')->find($id);
             return response()->json(['status' => true, 'message' => $post]);
         } catch (\Exception $e) {
@@ -117,6 +131,10 @@ class PostsController extends Controller
     {
         DB::beginTransaction();
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('post'), 'isupdate');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $data = $request->validated();
             $data['user_id'] = Auth::id();
 
@@ -147,6 +165,10 @@ class PostsController extends Controller
     public function destroy(string $id)
     {
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('post'), 'isdelete');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             if ($id) {
                 $attachment = Attachment::where('post_id', $id);
                 // $image[]=$attachment->image;
@@ -162,14 +184,15 @@ class PostsController extends Controller
         }
     }
 
-    public function deleteImage($id){
-        try{
+    public function deleteImage($id)
+    {
+        try {
             $attachment = Attachment::find($id);
             Storage::disk('public')->delete($attachment->image);
             $attachment->delete();
-            return response()->json(['status'=>true]);
-        }catch(\Exception $e){
-            return response()->json(['status'=>false,'message'=>$e->getMessage()]);
+            return response()->json(['status' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => $e->getMessage()]);
         }
     }
 }

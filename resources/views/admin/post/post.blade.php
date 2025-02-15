@@ -1,9 +1,11 @@
 @extends('admin.layout.main')
 @section('content')
     <div class="container-fluid">
+        @if ($access['isinsert'] == 'Y')
         <button type="button" class="btn btn-primary" id="addPostBtn">
             <i class="bi bi-plus-lg"></i>  Add Post
-          </button>
+        </button>
+        @endif
           @include('admin.post.postmodal')
 
           <div
