@@ -4,7 +4,9 @@ use App\Http\Controllers\Admin\calendar\CalendarController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Event\EventController;
 use App\Http\Controllers\Admin\FacultyController;
+use App\Http\Controllers\Admin\Menu\MenuController;
 use App\Http\Controllers\Admin\Post\PostsController;
+use App\Http\Controllers\Admin\Student\StudentController;
 use App\Http\Controllers\Admin\SyllabusContentController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +33,8 @@ Route::middleware('isLogin')->group(function(){
 
 Route::middleware('auth')->group(function(){
     Route::prefix('admin')->group(function(){
+        Route::resource('menu', MenuController::class);
+        Route::get('menu/status/{id}',[MenuController::class,'toggleStatus']);
         Route::get('dashboard',[DashboardController::class,'index'])->name('admin.dashboard');
         Route::resource('post',PostsController::class)->except(['create','show']);
         Route::get('post/image/delete/{id}',[PostsController::class,'deleteImage']);
@@ -53,5 +57,7 @@ Route::middleware('auth')->group(function(){
        Route::get('event/sheduled/delete/{id}',[EventController::class,'deleteSheduled']);
        Route::get('calendar',[CalendarController::class,'index'])->name('calendar');
        Route::get('event/calendar/get',[EventController::class,'getEvent'])->name('calendar.events');
+
+       Route::resource('student', StudentController::class);
     });
 });

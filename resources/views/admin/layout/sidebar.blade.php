@@ -42,49 +42,42 @@
                 </div>
                 <div class="menu-divider m-0"></div>
             </div>
-
             <div class="menu-item">
-                <a href="{{ route('post.index') }}" class="menu-link">
+                <a href="#settingsMenu" class="menu-link" data-bs-toggle="collapse">
                     <div class="menu-icon">
-                        <i class="fab fa-simplybuilt"></i>
+                        <i class="bi bi-gear"></i> <!-- Settings Icon -->
                     </div>
-                    <div class="menu-text"><i class="bi bi-newspaper"></i> Posts</div>
+                    <div class="menu-text">Settings</div>
                 </a>
-            </div>
-
-            <div class="menu-item">
-                <a href="{{ route('faculty.index') }}" class="menu-link">
-                    <div class="menu-icon">
-                        <i class="fab fa-simplybuilt"></i>
+                <div class="collapse" id="settingsMenu">
+                    <div class="menu-sub">
+                        <a href="{{ route('menu.index') }}" class="menu-link">
+                            <div class="menu-icon">
+                                <i class="bi bi-list"></i>
+                            </div>
+                            <div class="menu-text">Menu</div>
+                        </a>
+                        <a href="{{ url('/menu-permission') }}" class="menu-link">
+                            <div class="menu-icon">
+                                <i class="bi bi-shield-lock"></i>
+                            </div>
+                            <div class="menu-text">Menu Permission</div>
+                        </a>
                     </div>
-                    <div class="menu-text"><i class="bi bi-house-gear-fill"></i> Degree</div>
-                </a>
-            </div>
-            <div class="menu-item">
-                <a href="{{ route('syllabus-content.index') }}" class="menu-link">
-                    <div class="menu-icon">
-                        <i class="fab fa-simplybuilt"></i>
-                    </div>
-                    <div class="menu-text"><i class="bi bi-journal-check"></i> Syllabus Content</div>
-                </a>
-            </div>
-          <div class="menu-item">
-                <a href="{{ route('event.index') }}" class="menu-link">
-                    <div class="menu-icon">
-                        <i class="fab fa-simplybuilt"></i>
-                    </div>
-                    <div class="menu-text"><i class="bi bi-journal-check"></i> Event Management</div>
-                </a>
+                </div>
             </div>
 
+
+            @foreach ($globalMenus as $menu)
             <div class="menu-item">
-                <a href="{{ route('calendar') }}" class="menu-link">
+                <a href="{{ $menu->redirect }}" class="menu-link">
                     <div class="menu-icon">
-                        <i class="fab fa-simplybuilt"></i>
+                        <i class="{{ $menu->icon }}"></i>
                     </div>
-                    <div class="menu-text"><i class="bi bi-calendar-day"></i> Calendar</div>
+                    <div class="menu-text">{{ $menu->title }}</div>
                 </a>
             </div>
+            @endforeach
         </div>
         <!-- END menu -->
     </div>

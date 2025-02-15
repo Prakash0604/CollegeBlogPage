@@ -19,5 +19,6 @@ class BatchTypeSeeder extends Seeder
                 'title'=>$type
             ]);
         }
+
     }
 }
