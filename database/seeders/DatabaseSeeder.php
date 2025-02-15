@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SubjectSeeder::class);
         $this->call(DegreeSeeder::class);
         $this->call(YearSemesterSeeder::class);
+        $this->call(FormPermissionSeeder::class);
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',

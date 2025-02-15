@@ -23,7 +23,7 @@ class BatchSeeder extends Seeder
 
         foreach ($batches as $batch) {
             if (is_null(DB::table('batches')->where('title', $batch)->select('id')->first())) {
-            DB::table('modules')->insert([
+            DB::table('batches')->insert([
                 'title' => $batch,
             ]);
             }
