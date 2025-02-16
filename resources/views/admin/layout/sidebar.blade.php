@@ -57,11 +57,11 @@
                             </div>
                             <div class="menu-text">Menu</div>
                         </a>
-                        <a href="{{ url('/menu-permission') }}" class="menu-link">
+                        <a href="{{ route('role.index') }}" class="menu-link">
                             <div class="menu-icon">
                                 <i class="bi bi-shield-lock"></i>
                             </div>
-                            <div class="menu-text">Menu Permission</div>
+                            <div class="menu-text">Role & Permission</div>
                         </a>
                     </div>
                 </div>

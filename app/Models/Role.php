@@ -9,4 +9,8 @@ class Role extends Model
 {
     use HasFactory;
     protected $fillable=['title','status'];
+
+    public function permission(){
+        return $this->hasMany(FormPermission::class,'role_id','id');
+    }
 }

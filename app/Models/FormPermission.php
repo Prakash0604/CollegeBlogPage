@@ -9,4 +9,7 @@ class FormPermission extends Model
 {
     use HasFactory;
     protected $fillable=['formname','slug','isinsert','isupdate','isedit','isdelete','role_id'];
+    public function role(){
+        return $this->belongsTo(Role::class,'role_id','id');
+    }
 }

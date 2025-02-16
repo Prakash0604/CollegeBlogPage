@@ -5,7 +5,9 @@ use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Event\EventController;
 use App\Http\Controllers\Admin\FacultyController;
 use App\Http\Controllers\Admin\Menu\MenuController;
+use App\Http\Controllers\Admin\Permission\PermissionController;
 use App\Http\Controllers\Admin\Post\PostsController;
+use App\Http\Controllers\Admin\Role\RoleController;
 use App\Http\Controllers\Admin\Student\StudentController;
 use App\Http\Controllers\Admin\SyllabusContentController;
 use App\Http\Controllers\Auth\AuthController;
@@ -35,6 +37,12 @@ Route::middleware('auth')->group(function(){
     Route::prefix('admin')->group(function(){
         Route::resource('menu', MenuController::class);
         Route::get('menu/status/{id}',[MenuController::class,'toggleStatus']);
+
+        Route::resource('role',RoleController::class);
+        Route::get('role/status/{id}',[RoleController::class,'toggleStatus']);
+
+        Route::get('permission/{id}',[PermissionController::class,'index'])->name('admin.permission');
+
         Route::get('dashboard',[DashboardController::class,'index'])->name('admin.dashboard');
         Route::resource('post',PostsController::class)->except(['create','show']);
         Route::get('post/image/delete/{id}',[PostsController::class,'deleteImage']);
