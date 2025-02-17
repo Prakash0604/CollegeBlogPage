@@ -27,13 +27,20 @@ class EventController extends Controller
      */
     public function index(Request $request)
     {
+        $access = $this->accessCheck('post');
         if ($request->ajax()) {
             $events = Event::all();
             return DataTables::of($events)
                 ->addIndexColumn()
-                ->addColumn('action', function ($item) {
-                    $btn = '<button class="btn btn-primary editEventBtn" data-id="' . $item->id . '" data-url="' . route('event.edit', $item->id) . '"><i class="bi bi-pencil-square"></i></button>';
-                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deleteEventBtn" data-id="' . $item->id . '"><i class="bi bi-trash-fill"></i></button>';
+                ->addColumn('action', function ($item) use ($access) {
+                    $btn="";
+                    if($access['isedit'] == 'Y'){
+                        $btn = '<button class="btn btn-primary editEventBtn" data-id="' . $item->id . '" data-url="' . route('event.edit', $item->id) . '"><i class="bi bi-pencil-square"></i></button>';
+                    }
+
+                    if($access['isdelete'] == 'Y'){
+                        $btn .= '&nbsp;<button class="btn btn-danger ml-2 deleteEventBtn" data-id="' . $item->id . '"><i class="bi bi-trash-fill"></i></button>';
+                    }
                     return $btn;
                 })
                 ->addColumn('title', function ($title) {
@@ -52,7 +59,7 @@ class EventController extends Controller
             config('js-map.admin.datatable.style')
         );
 
-        return view('admin.event.index', compact('extraJs', 'extraCs'));
+        return view('admin.event.index', compact('extraJs', 'extraCs','access'));
     }
 
     public function getEvent()
@@ -86,6 +93,10 @@ class EventController extends Controller
         // dd($request->all());
         DB::beginTransaction();
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('event'), 'isinsert');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $event = Event::create([
                 'title' => $request->event_title,
                 'description' => $request->event_description,
@@ -127,6 +138,10 @@ class EventController extends Controller
     public function edit(string $id)
     {
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('event'), 'isedit');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $event = Event::with('eventSheduled')->findOrFail($id);
             return response()->json([
                 'status' => true,
@@ -147,6 +162,10 @@ class EventController extends Controller
     {
         DB::beginTransaction();
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('event'), 'isupdate');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $data = $request->validated();
             $event = Event::findOrFail($id);
             $event->update($data);
@@ -172,6 +191,10 @@ class EventController extends Controller
     public function destroy(string $id)
     {
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('event'), 'isdelete');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $event = Event::findOrFail($id);
             if($event){
                 EventSchedule::where('event_id',$id)->delete();

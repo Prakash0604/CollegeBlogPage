@@ -28,6 +28,7 @@ class RoleController extends Controller
                 }) ->addColumn('permission', function ($item) {
                     $btn = '<a class="btn btn-info assignMenuBtn"  data-id="' . $item->id . '"><i class="bi bi-person-fill-check"></i></a>';
                     $btn .= '&nbsp;<a class="btn btn-warning assignPermissionBtn" data-id="' . $item->id . '" href="' . route('admin.permission',$item->id) . '"><i class="bi bi-shield-lock"></i></a>';
+                    $btn .= '&nbsp;<a class="btn btn-secondary viewPermissionBtn" data-id="' . $item->id . '" ><i class="bi bi-eye-fill"></i></a>';
                     return $btn;
                 })
                 ->addColumn('status', function ($status) {

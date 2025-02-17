@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Menu;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,7 +23,12 @@ class ViewServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('*', function ($view) {
-            $menus = Menu::where('status','active')->get();
+            $menus = DB::table('menus')
+            ->join('form_permissions', 'form_permissions.menu_id', '=', 'menus.id')
+            ->join('roles', 'form_permissions.role_id', '=', 'roles.id')
+            ->where('roles.id', auth()->user()->role_id)
+            ->select('menus.*')
+            ->get();
             $view->with('globalMenus', $menus);
         });
     }

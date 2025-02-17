@@ -11,8 +11,8 @@ $(document).ready(function () {
     getData();
     $.ajaxSetup({
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
     });
 });
 
@@ -32,8 +32,8 @@ function getData() {
             {
                 data: "title",
                 name: "title",
-            }
-           ,{
+            },
+            {
                 data: "status",
                 name: "status",
             },
@@ -75,7 +75,7 @@ $(document)
         $("#createRoleBtn").prop("disabled", true);
         $.ajax({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             url: "role",
             type: "post",
@@ -114,7 +114,7 @@ $(document)
         });
     });
 
-    $(document)
+$(document)
     .off("click", ".statusToggle")
     .on("click", ".statusToggle", function (e) {
         let id = $(this).attr("data-id");
@@ -143,10 +143,7 @@ $(document)
                                 timer: 1000,
                             });
                             checked.prop("disabled", false);
-                            $("#fetch-role-data")
-                                .Datatable()
-                                .clear()
-                                .destroy();
+                            $("#fetch-role-data").Datatable().clear().destroy();
                             getData();
                         } else {
                             Swal.fire({
@@ -203,7 +200,7 @@ $(document)
                         if (response.status == true) {
                             Swal.fire({
                                 icon: "success",
-                                title:"Deleted!",
+                                title: "Deleted!",
                                 text: "Role Deleted Successfully",
                                 showConfirmButton: false,
                                 timer: 1000,
@@ -248,21 +245,22 @@ $(document)
         });
     });
 
-    $(document).off("submit","#updateRole").on("submit","#updateRole",function(e){
+$(document)
+    .off("submit", "#updateRole")
+    .on("submit", "#updateRole", function (e) {
         e.preventDefault();
-        let id=$("#id").val();
-        let url="/admin/role/"+id;
-        let formdata=new FormData(this);
-        formdata.append("_method","PUT");
+        let id = $("#id").val();
+        let url = "/admin/role/" + id;
+        let formdata = new FormData(this);
+        formdata.append("_method", "PUT");
         $.ajax({
-            method:"post",
-            url:url,
-            data:formdata,
-            contentType:false,
-            processData:false,
-            success:function(response){
+            method: "post",
+            url: url,
+            data: formdata,
+            contentType: false,
+            processData: false,
+            success: function (response) {
                 if (response.status == true) {
-
                     Swal.fire({
                         icon: "success",
                         title: "Updated!",
@@ -280,26 +278,25 @@ $(document)
                         title: "Something went wrong!",
                     });
                 }
-            }
-        })
-    })
+            },
+        });
+    });
 
-
-    $(document)
+$(document)
     .off("click", ".assignMenuBtn")
     .on("click", ".assignMenuBtn", function () {
-        let dataid=$(this).attr("data-id");
+        let dataid = $(this).attr("data-id");
         $("#menu_id").empty();
         $.ajax({
-            url:"role/already/assigned/data/"+dataid,
-            data:"get",
-            success:function(respose){
-                $.each(respose.message,function(index,data){
-                    let html=`<option value="${data.id}">${data.title}</option>`;
+            url: "role/already/assigned/data/" + dataid,
+            data: "get",
+            success: function (respose) {
+                $.each(respose.message, function (index, data) {
+                    let html = `<option value="${data.id}">${data.title}</option>`;
                     $("#menu_id").append(html);
-                })
-            }
-        })
+                });
+            },
+        });
         $("#assignMenuModal").modal("show");
         $("#role_id").val($(this).attr("data-id"));
         $(".addMenu").attr("id", "storeMenus");
@@ -325,15 +322,73 @@ $(document)
             success: function (res) {
                 if (res.status == true) {
                     Swal.fire({
-                        icon:"success",
-                        title:"Saved",
-                        text:"Menu Saved Successfully!",
-                        showConfirmButton:false,
-                        timer:1000
+                        icon: "success",
+                        title: "Saved",
+                        text: "Menu Saved Successfully!",
+                        showConfirmButton: false,
+                        timer: 1000,
                     });
                     $("#assignMenuModal").modal("hide");
-                   $("#fetch-role-data").DataTable().destroy().clear();
-                   getData();
+                    $("#fetch-role-data").DataTable().destroy().clear();
+                    getData();
+                }
+            },
+        });
+    });
+
+$(document)
+    .off("click", ".viewPermissionBtn")
+    .on("click", ".viewPermissionBtn", function () {
+        let dataId = $(this).attr("data-id");
+        $("#appendMenus").empty();
+        $.ajax({
+            type: "get",
+            url: "role/menu/list/" + dataId,
+            success: function (response) {
+                if (response.status == true) {
+                    $("#viewMenuModal").modal("show");
+                    console.log(response);
+                    let menu = response.message;
+                    let html = "";
+                    $.each(menu, function (index, data) {
+                        if (menu.length > 0) {
+                            html = ` <tr class="">
+                        <td>${data.menu.title}</td>
+                        <td>
+                        <button class="btn btn-danger deleteMenu" type="button" data-id="${data.id}"><i class="bi bi-trash-fill"></i></button>
+                        </td>
+                        </tr>`;
+                            $("#appendMenus").append(html);
+                        } else {
+                            html = `<tr class=""><td>No data found</td> </tr>`;
+                            $("#appendMenus").append(html);
+                        }
+                    });
+                }
+            },
+        });
+    });
+
+$(document)
+    .off("click", ".deleteMenu")
+    .on("click", ".deleteMenu", function () {
+        let dataid = $(this).attr("data-id");
+        let checked = $(this);
+        $.ajax({
+            url: "role/menu/remove/" + dataid,
+            type: "get",
+            success: function (response) {
+                if (response.status == true) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Removed",
+                        text: "Menu removed successfully!",
+                        showConfirmButton: false,
+                        timer: 1000,
+                    });
+                    checked.closest("tr").remove();
+                    $("#fetch-role-data").DataTable().destroy().clear();
+                    getData();
                 }
             },
         });

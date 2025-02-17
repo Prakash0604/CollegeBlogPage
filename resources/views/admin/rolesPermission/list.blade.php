@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <button type="button" class="btn btn-primary" id="addRoleBtn">
             <i class="bi bi-plus-lg"></i>  Add Role
-          </button>
+        </button>
           @include('admin.rolesPermission.modal')
 
           <div

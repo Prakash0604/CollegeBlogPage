@@ -30,6 +30,7 @@ class PostsController extends Controller
     public function index(Request $request)
     {
         $access = $this->accessCheck('post');
+
         if ($request->ajax()) {
 
             $posts = Post::with('attachment')->get();

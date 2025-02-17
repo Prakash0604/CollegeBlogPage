@@ -22,6 +22,8 @@ class SyllabusContentController extends Controller
      */
     public function index(Request $request)
     {
+        $access = $this->accessCheck('syllabus-content');
+
         if ($request->ajax()) {
             $syllabus = SyllabusContent::with('degree', 'batch', 'batchType', 'yearSemester', 'subject')->get();
             return DataTables::of($syllabus)
@@ -41,10 +43,18 @@ class SyllabusContentController extends Controller
                 ->addColumn('subject', function ($subject) {
                     return $subject->subject->title;
                 })
-                ->addColumn('action', function ($item) {
-                    $btn = '<button class="btn btn-warning ml-2 viewSyllabusBtn" type="button" data-id="' . $item->id . '"  data-url="' . route('syllabus-content.show', $item->id) . '"><i class="bi bi-eye-fill"></i></button>';
-                    $btn .= '&nbsp;<button class="btn btn-primary editSyllabusBtn" type="button" data-id="' . $item->id . '" data-url="' . route('syllabus-content.show', $item->id) . '"><i class="bi bi-pencil-square"></i></button>';
-                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deleteSyllabusBtn" data-id="' . $item->id . '" data-url="' . route('syllabus-content.destroy', $item->id) . '"><i class="bi bi-trash-fill"></i></button>';
+                ->addColumn('action', function ($item) use ($access) {
+                    $btn="";
+                    if($access['isedit'] == 'Y'){
+                        $btn = '<button class="btn btn-warning ml-2 viewSyllabusBtn" type="button" data-id="' . $item->id . '"  data-url="' . route('syllabus-content.show', $item->id) . '"><i class="bi bi-eye-fill"></i></button>';
+                    }
+                    if($access['isedit'] == 'Y'){
+                        $btn .= '&nbsp;<button class="btn btn-primary editSyllabusBtn" type="button" data-id="' . $item->id . '" data-url="' . route('syllabus-content.show', $item->id) . '"><i class="bi bi-pencil-square"></i></button>';
+                    }
+
+                    if($access['isdelete'] == 'Y'){
+                        $btn .= '&nbsp;<button class="btn btn-danger ml-2 deleteSyllabusBtn" data-id="' . $item->id . '" data-url="' . route('syllabus-content.destroy', $item->id) . '"><i class="bi bi-trash-fill"></i></button>';
+                    }
                     return $btn;
                 })
                 ->rawColumns(['action'])
@@ -130,6 +140,10 @@ class SyllabusContentController extends Controller
     {
         DB::beginTransaction();
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('syllabus-content'), 'isinsert');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             if ($request->hasChapter === 'N') {
                 if ($request->file != null) {
                     $image = 'images/syllabus/';
@@ -182,6 +196,10 @@ class SyllabusContentController extends Controller
     public function show(string $id)
     {
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('syllabus-content'), 'isedit');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $syllabus = SyllabusContent::with('degree', 'batch', 'batchType', 'yearSemester', 'subject', 'syllabusSubject')->find($id);
             return response()->json(['status' => true, 'message' => $syllabus]);
         } catch (\Exception $e) {
@@ -202,7 +220,10 @@ class SyllabusContentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $accessCheck = $this->checkAccess($this->accessCheck('syllabus-content'), 'isupdate');
+        if ($accessCheck && $accessCheck['status'] == false) {
+            return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+        }
     }
 
     /**
@@ -211,6 +232,10 @@ class SyllabusContentController extends Controller
     public function destroy(string $id)
     {
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('syllabus-content'), 'isdelete');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $syllabus = SyllabusContent::find($id);
             if ($syllabus) {
                 SyllabusContentSubject::where('syllabus_content_id', $id)->delete();

@@ -107,4 +107,22 @@ class PermissionController extends Controller
     }
 }
 
+public function getRoleBaseMenu($id){
+    try{
+        $menus=FormPermission::with('menu')->where('role_id',$id)->get();
+        return response()->json(['status'=>true,'message'=>$menus]);
+    }catch(\Exception $e){
+        return response()->json(['status'=>false,'message'=>$e->getMessage()]);
+    }
+}
+
+public function removeRoleBaseMenu($id){
+    try{
+        FormPermission::find($id)->delete();
+        return response()->json(['status'=>true,'message'=>'Menu removed Successfully!']);
+    }catch(\Exception $e){
+        return response()->json(['status'=>false,'message'=>$e->getMessage()]);
+    }
+}
+
 }

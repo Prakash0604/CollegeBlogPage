@@ -22,17 +22,31 @@ class FacultyController extends Controller
      */
     public function index(Request $request)
     {
+        $access = $this->accessCheck('degree');
+
         if ($request->ajax()) {
 
             $degrees = Degree::all();
 
             return DataTables::of($degrees)
                 ->addIndexColumn()
-                ->addColumn('action', function ($item) {
-                    $btn = '<button class="btn btn-warning ml-2 assignSubjectBtn" data-id="' . $item->id . '"><i class="bi bi-plus-lg"></i></button>';
-                    $btn .= '&nbsp;<button class="btn btn-info ml-2 viewSubjectBtn" data-id="' . $item->id . '"><i class="bi bi-eye-fill"></i></button>';
-                    $btn .= '&nbsp;<button class="btn btn-primary editDegreeBtn" data-id="' . $item->id . '" data-url="' . route('faculty.edit', $item->id) . '"><i class="bi bi-pencil-square"></i></button>';
-                    $btn .= '&nbsp;<button class="btn btn-danger ml-2 deleteDegreeBtn" data-id="' . $item->id . '" data-url="' . route('faculty.destroy', $item->id) . '"><i class="bi bi-trash-fill"></i></button>';
+                ->addColumn('action', function ($item) use ($access) {
+                    $btn="";
+                    if($access['isinsert'] == 'Y'){
+                        $btn = '<button class="btn btn-warning ml-2 assignSubjectBtn" data-id="' . $item->id . '"><i class="bi bi-plus-lg"></i></button>';
+                    }
+
+                    if($access['isedit'] == 'Y'){
+                        $btn .= '&nbsp;<button class="btn btn-info ml-2 viewSubjectBtn" data-id="' . $item->id . '"><i class="bi bi-eye-fill"></i></button>';
+                    }
+
+                    if($access['isedit'] == 'Y'){
+                        $btn .= '&nbsp;<button class="btn btn-primary editDegreeBtn" data-id="' . $item->id . '" data-url="' . route('faculty.edit', $item->id) . '"><i class="bi bi-pencil-square"></i></button>';
+                    }
+
+                    if($access['isdelete'] == 'Y'){
+                        $btn .= '&nbsp;<button class="btn btn-danger ml-2 deleteDegreeBtn" data-id="' . $item->id . '" data-url="' . route('faculty.destroy', $item->id) . '"><i class="bi bi-trash-fill"></i></button>';
+                    }
                     return $btn;
                 })
                 ->addColumn('status', function ($status) {
@@ -112,7 +126,10 @@ class FacultyController extends Controller
     public function toggleStatus($id)
     {
         try {
-
+            $accessCheck = $this->checkAccess($this->accessCheck('degree'), 'isupdate');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $user = Degree::find($id);
             if ($user->status == 'active') {
                 $user->status = 'inactive';
@@ -145,6 +162,10 @@ class FacultyController extends Controller
     {
         DB::beginTransaction();
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('degree'), 'isinsert');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $data = $request->validate([
                 'title' => 'required'
             ]);
@@ -161,6 +182,11 @@ class FacultyController extends Controller
     public function storeSubject(Request $request)
     {
         try {
+
+            $accessCheck = $this->checkAccess($this->accessCheck('degree'), 'isinsert');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
 
             $degree = DegreeBatchSemester::create([
                 'degree_id' => $request->degree_id,
@@ -194,6 +220,10 @@ class FacultyController extends Controller
     public function edit(string $id)
     {
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('degree'), 'isedit');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $degree = Degree::find($id);
             return response()->json(['status' => true, 'message' => $degree]);
         } catch (\Exception $e) {
@@ -207,6 +237,10 @@ class FacultyController extends Controller
     public function update(Request $request, string $id)
     {
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('degree'), 'isupdate');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $data = $request->validate([
                 'title' => 'required'
             ]);
@@ -224,6 +258,10 @@ class FacultyController extends Controller
     public function destroy(string $id)
     {
         try {
+            $accessCheck = $this->checkAccess($this->accessCheck('degree'), 'isdelete');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             if ($id) {
                 $degree = Degree::find($id);
                 $degree->delete();
@@ -237,6 +275,10 @@ class FacultyController extends Controller
     public function deleteDegreeSubject($id){
         $id=DegreeSubject::find($id);
         if($id!=null){
+            $accessCheck = $this->checkAccess($this->accessCheck('degree'), 'isdelete');
+            if ($accessCheck && $accessCheck['status'] == false) {
+                return response()->json(['status' => $accessCheck['status'], 'message' => $accessCheck['message'], 403]);
+            }
             $id->delete();
             return response()->json(['status'=>true]);
         }else{

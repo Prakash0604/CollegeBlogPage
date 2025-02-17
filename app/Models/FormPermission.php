@@ -12,4 +12,7 @@ class FormPermission extends Model
     public function role(){
         return $this->belongsTo(Role::class,'role_id','id');
     }
+    public function menu(){
+        return $this->belongsTo(Menu::class,'menu_id','id');
+    }
 }

@@ -64,5 +64,42 @@
 </div>
 
 
+<div class="modal fade" id="viewMenuModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal-dialog">
+   <div class="modal-content">
+           <div class="modal-header">
+               <h5 class="modal-title" id="modal-title">View Menu</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+           </div>
+           <div class="modal-body">
+               <div class="row">
+                   @csrf
+                 <div
+                    class="table-responsive"
+                 >
+                    <table
+                        class="table table-primary"
+                    >
+                        <thead>
+                            <tr>
+                                <th scope="col">Menu</th>
+                                <th scope="col">Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appendMenus">
+                        </tbody>
+                    </table>
+                 </div>
+
+               </div>
+           </div>
+           <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+           </div>
+   </div>
+</div>
+</div>
+
 
 

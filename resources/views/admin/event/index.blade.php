@@ -1,9 +1,11 @@
 @extends('admin.layout.main')
 @section('content')
     <div class="container-fluid ">
+        @if ($access['isinsert'] == 'Y')
         <button type="button" class="btn  btn-primary" id="addEventBtnToggle">
             <i class="bi bi-plus-lg "></i>  Add Event
-          </button>
+        </button>
+        @endif
           {{-- @include('admin.event.eventmodal') --}}
           @include('admin.event.create_event')
 

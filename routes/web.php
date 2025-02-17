@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function(){
         Route::get('role/status/{id}',[RoleController::class,'toggleStatus']);
         Route::post('role/menu/access',[PermissionController::class,'giveMenuAccess']);
         Route::get('role/already/assigned/data/{id}',[PermissionController::class,'excludeMenu']);
+        Route::get('role/menu/list/{id}',[PermissionController::class,'getRoleBaseMenu']);
+        Route::get('role/menu/remove/{id}',[PermissionController::class,'removeRoleBaseMenu']);
 
         Route::get('permission/{id}',[PermissionController::class,'index'])->name('admin.permission');
         Route::post('permission/update/status',[PermissionController::class,'updateStatus']);
