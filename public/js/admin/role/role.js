@@ -1,4 +1,13 @@
 $(document).ready(function () {
+    $("#menu_id").select2({
+        placeholder: "Select an option",
+        dropdownParent: $("#assignMenuModal"),
+    });
+
+    $(".openAssignMenuModal").click(function () {
+        $("#roleAdd")[0].reset();
+        $("#assignMenuModal").modal("show");
+    });
     getData();
     $.ajaxSetup({
         headers: {
@@ -27,6 +36,10 @@ function getData() {
            ,{
                 data: "status",
                 name: "status",
+            },
+            {
+                data: "permission",
+                name: "permission",
             },
             {
                 data: "action",
@@ -271,3 +284,57 @@ $(document)
         })
     })
 
+
+    $(document)
+    .off("click", ".assignMenuBtn")
+    .on("click", ".assignMenuBtn", function () {
+        let dataid=$(this).attr("data-id");
+        $("#menu_id").empty();
+        $.ajax({
+            url:"role/already/assigned/data/"+dataid,
+            data:"get",
+            success:function(respose){
+                $.each(respose.message,function(index,data){
+                    let html=`<option value="${data.id}">${data.title}</option>`;
+                    $("#menu_id").append(html);
+                })
+            }
+        })
+        $("#assignMenuModal").modal("show");
+        $("#role_id").val($(this).attr("data-id"));
+        $(".addMenu").attr("id", "storeMenus");
+        $("#storeMenus")[0].reset();
+        // $("#createMenuBtn").show();
+        // $("#updateMenuBtn").hide();
+    });
+
+$(document)
+    .off("submit", "#storeMenus")
+    .on("submit", "#storeMenus", function (e) {
+        e.preventDefault();
+        let menu_id = $("#menu_id").val();
+        let role_id = $("#role_id").val();
+        let dataUrl = "role/menu/access";
+        $.ajax({
+            type: "post",
+            url: dataUrl,
+            data: {
+                menu_id: menu_id,
+                role_id: role_id,
+            },
+            success: function (res) {
+                if (res.status == true) {
+                    Swal.fire({
+                        icon:"success",
+                        title:"Saved",
+                        text:"Menu Saved Successfully!",
+                        showConfirmButton:false,
+                        timer:1000
+                    });
+                    $("#assignMenuModal").modal("hide");
+                   $("#fetch-role-data").DataTable().destroy().clear();
+                   getData();
+                }
+            },
+        });
+    });

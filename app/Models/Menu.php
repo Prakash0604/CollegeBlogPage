@@ -9,4 +9,7 @@ class Menu extends Model
 {
     use HasFactory;
     protected $fillable=['title','icon','redirect','status'];
+    public function permission(){
+        return $this->hasMany(FormPermission::class,'menu_id','id');
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Role;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Menu;
 use Yajra\DataTables\Facades\DataTables;
 
 class RoleController extends Controller
@@ -21,9 +22,12 @@ class RoleController extends Controller
             return DataTables::of($role)
                 ->addIndexColumn()
                 ->addColumn('action', function ($item) {
-                    $btn = '<a class="btn btn-warning assignPermissionBtn" data-id="' . $item->id . '" href="' . route('admin.permission',$item->id) . '"><i class="bi bi-shield-lock"></i></a>';
-                    $btn .= '&nbsp;<button class="btn btn-primary editRoleBtn" data-id="' . $item->id . '" data-url="' . route('role.edit',$item->id) . '"><i class="bi bi-pencil-square"></i></button>';
+                    $btn = '<button class="btn btn-primary editRoleBtn" data-id="' . $item->id . '" data-url="' . route('role.edit',$item->id) . '"><i class="bi bi-pencil-square"></i></button>';
                     $btn .= '&nbsp;<button class="btn btn-danger ml-2 deleteRoleBtn" data-id="' . $item->id . '"><i class="bi bi-trash-fill"></i></button>';
+                    return $btn;
+                }) ->addColumn('permission', function ($item) {
+                    $btn = '<a class="btn btn-info assignMenuBtn"  data-id="' . $item->id . '"><i class="bi bi-person-fill-check"></i></a>';
+                    $btn .= '&nbsp;<a class="btn btn-warning assignPermissionBtn" data-id="' . $item->id . '" href="' . route('admin.permission',$item->id) . '"><i class="bi bi-shield-lock"></i></a>';
                     return $btn;
                 })
                 ->addColumn('status', function ($status) {
@@ -32,16 +36,19 @@ class RoleController extends Controller
                     <input class="form-check-input statusToggle mx-auto" type="checkbox" ' . $stat . ' data-id="' . $status->id . '" role="switch" id="flexSwitchCheckDefault">
                     </div>';
                 })
-                ->rawColumns(['action','status'])
+                ->rawColumns(['action','status','permission'])
                 ->make(true);
         }
         $extraJs = array_merge(
-            config('js-map.admin.datatable.script')
+            config('js-map.admin.datatable.script'),
+            config('js-map.admin.select2.script'),
         );
         $extraCs = array_merge(
-            config('js-map.admin.datatable.style')
+            config('js-map.admin.datatable.style'),
+            config('js-map.admin.select2.style')
         );
-        return view('admin.rolesPermission.list',compact('extraJs','extraCs'));
+        $menus=Menu::where('status','active')->get();
+        return view('admin.rolesPermission.list',compact('extraJs','extraCs','menus'));
     }
 
     public function toggleStatus($id)

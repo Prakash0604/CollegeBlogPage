@@ -40,8 +40,11 @@ Route::middleware('auth')->group(function(){
 
         Route::resource('role',RoleController::class);
         Route::get('role/status/{id}',[RoleController::class,'toggleStatus']);
+        Route::post('role/menu/access',[PermissionController::class,'giveMenuAccess']);
+        Route::get('role/already/assigned/data/{id}',[PermissionController::class,'excludeMenu']);
 
         Route::get('permission/{id}',[PermissionController::class,'index'])->name('admin.permission');
+        Route::post('permission/update/status',[PermissionController::class,'updateStatus']);
 
         Route::get('dashboard',[DashboardController::class,'index'])->name('admin.dashboard');
         Route::resource('post',PostsController::class)->except(['create','show']);

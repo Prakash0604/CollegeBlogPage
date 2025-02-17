@@ -22,7 +22,8 @@ class FormPermissionSeeder extends Seeder
                     'isupdate' => 'Y',
                     'isedit' => 'Y',
                     'isdelete' => 'Y',
-                    'role_id' => '1'
+                    'role_id' => '1',
+                    'menu_id'=>'1',
                 ]
             );
         }
@@ -36,7 +37,8 @@ class FormPermissionSeeder extends Seeder
                     'isupdate' => 'Y',
                     'isedit' => 'Y',
                     'isdelete' => 'Y',
-                    'role_id' => '1'
+                    'role_id' => '1',
+                    'menu_id'=>'2',
                 ]
             );
         }
@@ -50,7 +52,8 @@ class FormPermissionSeeder extends Seeder
                     'isupdate' => 'Y',
                     'isedit' => 'Y',
                     'isdelete' => 'Y',
-                    'role_id' => '1'
+                    'role_id' => '1',
+                    'menu_id'=>'3',
                 ]
             );
         }
@@ -64,7 +67,8 @@ class FormPermissionSeeder extends Seeder
                     'isupdate' => 'Y',
                     'isedit' => 'Y',
                     'isdelete' => 'Y',
-                    'role_id' => '1'
+                    'role_id' => '1',
+                    'menu_id'=>'4',
                 ]
             );
         }if (is_null(DB::table('form_permissions')->where('slug', 'syllabus-content')->select('id')->first())) {
@@ -76,7 +80,8 @@ class FormPermissionSeeder extends Seeder
                     'isupdate' => 'Y',
                     'isedit' => 'Y',
                     'isdelete' => 'Y',
-                    'role_id' => '1'
+                    'role_id' => '1',
+                    'menu_id'=>'5',
                 ]
             );
         }if (is_null(DB::table('form_permissions')->where('slug', 'event')->select('id')->first())) {
@@ -88,7 +93,8 @@ class FormPermissionSeeder extends Seeder
                     'isupdate' => 'Y',
                     'isedit' => 'Y',
                     'isdelete' => 'Y',
-                    'role_id' => '1'
+                    'role_id' => '1',
+                    'menu_id'=>'6',
                 ]
             );
         }

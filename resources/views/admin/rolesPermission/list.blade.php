@@ -18,6 +18,7 @@
                         <th scope="col">S.N</th>
                         <th scope="col">Title</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Permission</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
